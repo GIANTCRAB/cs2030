@@ -41,6 +41,12 @@ public class Circle {
         }
     }
 
+    public boolean intersects(Circle secondCircle) {
+        final Point secondCirclePoint = secondCircle.getPoint();
+
+        return this.getPoint().distanceTo(secondCirclePoint) <= this.getRadius();
+    }
+
     private static boolean isValidRadius(double radius) {
         return radius > 0;
     }
