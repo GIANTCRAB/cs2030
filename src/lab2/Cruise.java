@@ -2,7 +2,7 @@ package lab2;
 
 import java.time.LocalTime;
 
-public final class Cruise {
+public class Cruise {
     private final String id;
     private final LocalTime arrivalTime;
     private final int loadersRequired;
