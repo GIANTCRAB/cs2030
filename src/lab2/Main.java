@@ -50,9 +50,17 @@ public class Main {
                 }
 
                 if (needNewLoader) {
-                    final Loader loader = new Loader(loaderArrayList.size() + 1, cruise);
-                    loaderArrayList.add(loader);
-                    System.out.println(loader.toString());
+                    final int newId = loaderArrayList.size() + 1;
+                    // Every third one is made from recycled materials
+                    if (newId % 3 == 0) {
+                        final RecycledLoader recycledLoader = new RecycledLoader(newId).serve(cruise);
+                        loaderArrayList.add(recycledLoader);
+                        System.out.println(recycledLoader.toString());
+                    } else {
+                        final Loader loader = new Loader(newId).serve(cruise);
+                        loaderArrayList.add(loader);
+                        System.out.println(loader.toString());
+                    }
                 }
             }
         }

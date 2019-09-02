@@ -1,6 +1,6 @@
 package lab2;
 
-public final class Loader {
+public class Loader {
     private final int id;
     private final Cruise currentlyServing;
 
@@ -14,18 +14,30 @@ public final class Loader {
     }
 
     public Loader serve(Cruise cruise) {
-        if (this.currentlyServing != null && this.currentlyServing.doesTimelineConflict(cruise)) {
-            return null;
+        if (this.canServe(cruise)) {
+            return new Loader(this.getId(), cruise);
         }
 
-        return new Loader(this.id, cruise);
+        return null;
+    }
+
+    protected boolean canServe(Cruise cruise) {
+        return this.getCurrentlyServing() == null || !this.getCurrentlyServing().doesTimelineConflict(cruise);
     }
 
     @Override
     public String toString() {
-        if (this.currentlyServing != null) {
-            return "Loader " + this.id + " serving " + this.currentlyServing;
+        if (this.getCurrentlyServing() != null) {
+            return "Loader " + this.getId() + " serving " + this.getCurrentlyServing();
         }
-        return "Loader " + this.id;
+        return "Loader " + this.getId();
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public Cruise getCurrentlyServing() {
+        return this.currentlyServing;
     }
 }

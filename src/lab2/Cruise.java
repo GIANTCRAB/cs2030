@@ -26,7 +26,7 @@ public class Cruise {
         return arrivalTime.getMinute() + hoursInMinutes;
     }
 
-    private String getArrivalTimeDisplay() {
+    public String getArrivalTimeDisplay() {
         return String.format("%02d", arrivalTime.getHour()) + String.format("%02d", arrivalTime.getMinute());
     }
 
@@ -44,7 +44,7 @@ public class Cruise {
                 || (otherCruise.getServiceCompletionTime() > this.getArrivalTime() && otherCruise.getServiceCompletionTime() < this.getServiceCompletionTime()));
     }
 
-    private String getId() {
+    public String getId() {
         return id;
     }
 
@@ -56,8 +56,8 @@ public class Cruise {
         return this.getArrivalTime() + this.getLoadingMinutes();
     }
 
-    private int getLoadingMinutes() {
-        return loadingMinutes;
+    public int getLoadingMinutes() {
+        return this.loadingMinutes;
     }
 
     @Override
