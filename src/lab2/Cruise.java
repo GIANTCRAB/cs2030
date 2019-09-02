@@ -8,13 +8,11 @@ public final class Cruise {
     private final int loadersRequired;
     private final int loadingMinutes;
 
-    public Cruise(String id, int arrivalTime)
-    {
+    public Cruise(String id, int arrivalTime) {
         this(id, arrivalTime, 1, 30);
     }
 
-    public Cruise(String id, int arrivalTime, int loadersRequired, int loadingMinutes)
-    {
+    public Cruise(String id, int arrivalTime, int loadersRequired, int loadingMinutes) {
         this.id = id;
         this.arrivalTime = calculateArrivalTime(arrivalTime);
         this.loadersRequired = loadersRequired;
