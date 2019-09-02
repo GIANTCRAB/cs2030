@@ -37,6 +37,10 @@ public final class Cruise {
         return LocalTime.of(hour, minute);
     }
 
+    public boolean doesTimelineConflict(Cruise otherCruise) {
+        return this.getArrivalTime() >= otherCruise.getArrivalTime() && this.getServiceCompletionTime() <= this.getServiceCompletionTime();
+    }
+
     private String getId() {
         return id;
     }
@@ -53,6 +57,7 @@ public final class Cruise {
         return loadingMinutes;
     }
 
+    @Override
     public String toString() {
         return this.getId() + "@" + this.getArrivalTimeDisplay();
     }
