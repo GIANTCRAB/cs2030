@@ -38,7 +38,8 @@ public final class Cruise {
     }
 
     public boolean doesTimelineConflict(Cruise otherCruise) {
-        return this.getArrivalTime() >= otherCruise.getArrivalTime() && this.getServiceCompletionTime() <= this.getServiceCompletionTime();
+        return (this.getArrivalTime() >= otherCruise.getArrivalTime() && this.getArrivalTime() < otherCruise.getServiceCompletionTime())
+                || (this.getServiceCompletionTime() > otherCruise.getArrivalTime() && this.getServiceCompletionTime() < otherCruise.getServiceCompletionTime());
     }
 
     private String getId() {
