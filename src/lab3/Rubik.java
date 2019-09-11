@@ -74,6 +74,10 @@ public class Rubik implements Cloneable {
         return this.left().left().left();
     }
 
+    public final Rubik half() {
+        return this.left().left();
+    }
+
     private static int[] reverseIntArray(int[] intArray) {
         return IntStream.rangeClosed(1, intArray.length).map(i -> intArray[intArray.length - i]).toArray();
     }
