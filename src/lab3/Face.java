@@ -92,6 +92,7 @@ public class Face implements Cloneable {
                 formattedString.append(String.format("%02d", anInt));
             }
         }
+        formattedString.append("\n");
         return formattedString.toString();
     }
 }
