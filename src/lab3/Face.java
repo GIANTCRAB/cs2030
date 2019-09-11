@@ -82,6 +82,42 @@ public class Face implements Cloneable {
         return this.grid.clone();
     }
 
+    public final int[] getRow(int rowNumber) {
+        final int[][] intArray = this.toIntArray();
+
+        return intArray[rowNumber];
+    }
+
+    public final Face setRow(int rowNumber, int[] rowValues) {
+        int[][] intArray = this.toIntArray();
+
+        intArray[rowNumber] = rowValues;
+
+        return new Face(intArray);
+    }
+
+    public final int[] getColumn(int colNumber) {
+        final int[][] intArray = this.toIntArray();
+        int[] columnValues = new int[intArray.length];
+
+        for (int i = 0; i < intArray.length; i++) {
+            columnValues[i] = intArray[i][colNumber];
+        }
+
+        return columnValues;
+    }
+
+    public final Face setColumn(int colNumber, int[] colValues) {
+        int[][] intArray = this.toIntArray();
+
+        for (int i = 0; i < intArray.length; i++) {
+            intArray[i][colNumber] = colValues[i];
+        }
+
+
+        return new Face(intArray);
+    }
+
     @Override
     public final String toString() {
         StringBuilder formattedString = new StringBuilder();
