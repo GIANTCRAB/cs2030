@@ -2,15 +2,28 @@ package lab3;
 
 import java.util.ArrayList;
 
-public class Rubik {
+public class Rubik implements Cloneable {
     private final ArrayList<Face> faces;
 
     Rubik(int[][][] grid) {
-        this.faces = new ArrayList<>();
+        this.faces = new ArrayList<>(grid.length);
 
         for (int[][] gridFace : grid) {
             this.faces.add(new Face(gridFace));
         }
+    }
+
+    private Rubik(ArrayList<Face> faces) {
+        this.faces = faces;
+    }
+
+    @Override
+    public Rubik clone() {
+        final ArrayList<Face> faceClone = new ArrayList<>(this.faces.size());
+        for (Face face : this.faces) {
+            faceClone.add(face.clone());
+        }
+        return new Rubik(faceClone);
     }
 
     /**
@@ -20,7 +33,8 @@ public class Rubik {
      */
     @Override
     public String toString() {
-        final ArrayList<StringBuilder> rowsOfStrings = new ArrayList<>();
+        final int MAX_ROWS = 12;
+        final ArrayList<StringBuilder> rowsOfStrings = new ArrayList<>(MAX_ROWS);
 
         final int FIRST_FACE_INDEX = 0;
         final int SECOND_FACE_INDEX = 1;
