@@ -9,7 +9,7 @@ public class Face implements Cloneable {
 
     @Override
     public Face clone() {
-        return new Face(this.grid);
+        return new Face(this.toIntArray());
     }
 
     public Face right() {
