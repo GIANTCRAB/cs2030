@@ -15,25 +15,17 @@ public class Rubik implements Cloneable {
     }
 
     private Rubik(ArrayList<Face> faces) {
-        final ArrayList<Face> faceClone = new ArrayList<>(faces.size());
-        for (Face face : faces) {
-            faceClone.add(face.clone());
-        }
-        this.faces = faceClone;
+        this.faces = Rubik.cloneFaces(faces);
     }
 
     @Override
     public final Rubik clone() {
-        final ArrayList<Face> faceClone = new ArrayList<>(this.faces.size());
-        for (Face face : this.faces) {
-            faceClone.add(face.clone());
-        }
-        return new Rubik(faceClone);
+        return new Rubik(Rubik.cloneFaces(this.faces));
     }
 
     public final Rubik left() {
         Rubik rubikClone = this.clone();
-        ArrayList<Face> rubikFaces = rubikClone.faces;
+        final ArrayList<Face> rubikFaces = Rubik.cloneFaces(rubikClone.faces);
         // turn the middle/third face to left
         final Face newThirdSide = rubikFaces.get(2).left();
 
@@ -80,6 +72,14 @@ public class Rubik implements Cloneable {
 
     private static int[] reverseIntArray(int[] intArray) {
         return IntStream.rangeClosed(1, intArray.length).map(i -> intArray[intArray.length - i]).toArray();
+    }
+
+    private static ArrayList<Face> cloneFaces(ArrayList<Face> faces) {
+        final ArrayList<Face> faceClone = new ArrayList<>(faces.size());
+        for (Face face : faces) {
+            faceClone.add(face.clone());
+        }
+        return faceClone;
     }
 
     /**
