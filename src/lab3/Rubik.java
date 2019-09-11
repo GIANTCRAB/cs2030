@@ -1,6 +1,7 @@
 package lab3;
 
 import java.util.ArrayList;
+import java.util.stream.IntStream;
 
 public class Rubik implements Cloneable {
     private final ArrayList<Face> faces;
@@ -14,7 +15,11 @@ public class Rubik implements Cloneable {
     }
 
     private Rubik(ArrayList<Face> faces) {
-        this.faces = faces;
+        final ArrayList<Face> faceClone = new ArrayList<>(faces.size());
+        for (Face face : faces) {
+            faceClone.add(face.clone());
+        }
+        this.faces = faceClone;
     }
 
     @Override
@@ -24,6 +29,57 @@ public class Rubik implements Cloneable {
             faceClone.add(face.clone());
         }
         return new Rubik(faceClone);
+    }
+
+    public final Rubik left() {
+        Rubik rubikClone = this.clone();
+        ArrayList<Face> rubikFaces = rubikClone.faces;
+        // turn the middle/third face to left
+        final Face newThirdSide = rubikFaces.get(2).left();
+
+        final Face firstSide = rubikFaces.get(0);
+        final int[] firstSideBottomRow = firstSide.getRow(2);
+        final int[] firstSideBottomRowReversed = Rubik.reverseIntArray(firstSideBottomRow);
+
+        final Face secondSide = rubikFaces.get(1);
+        final int[] secondSideLastColumn = secondSide.getColumn(2);
+
+        final Face fifthSide = rubikFaces.get(4);
+        final int[] fifthSideFirstRow = fifthSide.getRow(0);
+        final int[] fifthSideFirstRowReversed = Rubik.reverseIntArray(fifthSideFirstRow);
+
+        final Face fourthSide = rubikFaces.get(3);
+        final int[] fourthSideFirstColumn = fourthSide.getColumn(0);
+
+        // turn all 4 sides - first, second, fourth and fifth
+
+        // first side - move bottom row to second side's last column
+        // reverse the order
+        final Face newSecondSide = secondSide.setColumn(2, firstSideBottomRowReversed);
+
+        // second side - move last column to fifth side's first row
+        // do not reverse the order
+        final Face newFifthSide = fifthSide.setRow(0, secondSideLastColumn);
+
+        // fifth side - move first row to fourth side's first column
+        // reverse the order
+        final Face newFourthSide = fourthSide.setColumn(0, fifthSideFirstRowReversed);
+
+        // fourth side - move first column to first side's last row
+        // do not reverse the order
+        final Face newFirstSide = firstSide.setRow(2, fourthSideFirstColumn);
+
+        rubikFaces.set(0, newFirstSide);
+        rubikFaces.set(1, newSecondSide);
+        rubikFaces.set(2, newThirdSide);
+        rubikFaces.set(3, newFourthSide);
+        rubikFaces.set(4, newFifthSide);
+
+        return new Rubik(rubikFaces);
+    }
+
+    private static int[] reverseIntArray(int[] intArray) {
+        return IntStream.rangeClosed(1, intArray.length).map(i -> intArray[intArray.length - i]).toArray();
     }
 
     /**
