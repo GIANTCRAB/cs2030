@@ -8,11 +8,11 @@ public class Face implements Cloneable {
     }
 
     @Override
-    public Face clone() {
+    public final Face clone() {
         return new Face(this.toIntArray());
     }
 
-    public Face right() {
+    public final Face right() {
         final int[][] newGrid = {
                 {
                         this.grid[2][0],
@@ -34,7 +34,7 @@ public class Face implements Cloneable {
         return new Face(newGrid);
     }
 
-    public Face left() {
+    public final Face left() {
         final int[][] newGrid = {
                 {
                         this.grid[0][2],
@@ -56,7 +56,7 @@ public class Face implements Cloneable {
         return new Face(newGrid);
     }
 
-    public Face half() {
+    public final Face half() {
         final int[][] newGrid = {
                 {
                         this.grid[2][2],
@@ -78,12 +78,12 @@ public class Face implements Cloneable {
         return new Face(newGrid);
     }
 
-    public int[][] toIntArray() {
-        return this.grid;
+    public final int[][] toIntArray() {
+        return this.grid.clone();
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         StringBuilder formattedString = new StringBuilder();
 
         for (int[] ints : this.grid) {
