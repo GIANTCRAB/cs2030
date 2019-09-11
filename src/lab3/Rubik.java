@@ -18,7 +18,7 @@ public class Rubik implements Cloneable {
     }
 
     @Override
-    public Rubik clone() {
+    public final Rubik clone() {
         final ArrayList<Face> faceClone = new ArrayList<>(this.faces.size());
         for (Face face : this.faces) {
             faceClone.add(face.clone());
@@ -32,7 +32,7 @@ public class Rubik implements Cloneable {
      * @return String
      */
     @Override
-    public String toString() {
+    public final String toString() {
         final int MAX_ROWS = 12;
         final ArrayList<StringBuilder> rowsOfStrings = new ArrayList<>(MAX_ROWS);
 
