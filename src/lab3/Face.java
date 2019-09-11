@@ -79,7 +79,14 @@ public class Face implements Cloneable {
     }
 
     public final int[][] toIntArray() {
-        return this.grid.clone();
+        final int ROWS = this.grid.length;
+        final int COLS = this.grid[0].length;
+        final int[][] intClone = new int[ROWS][COLS];
+        for (int row = 0; row < ROWS; row++) {
+            System.arraycopy(this.grid[row], 0, intClone[row], 0, COLS);
+        }
+
+        return intClone;
     }
 
     public final int[] getRow(int rowNumber) {
