@@ -1,7 +1,6 @@
 package lab3;
 
 import java.util.ArrayList;
-import java.util.stream.IntStream;
 
 public class Rubik implements Cloneable {
     private final ArrayList<Face> faces;
@@ -31,14 +30,14 @@ public class Rubik implements Cloneable {
 
         final Face firstSide = rubikFaces.get(0);
         final int[] firstSideBottomRow = firstSide.getRow(2);
-        final int[] firstSideBottomRowReversed = Rubik.reverseIntArray(firstSideBottomRow);
+        final int[] firstSideBottomRowReversed = ArrayUtils.reverseIntArray(firstSideBottomRow);
 
         final Face secondSide = rubikFaces.get(1);
         final int[] secondSideLastColumn = secondSide.getColumn(2);
 
         final Face fifthSide = rubikFaces.get(4);
         final int[] fifthSideFirstRow = fifthSide.getRow(0);
-        final int[] fifthSideFirstRowReversed = Rubik.reverseIntArray(fifthSideFirstRow);
+        final int[] fifthSideFirstRowReversed = ArrayUtils.reverseIntArray(fifthSideFirstRow);
 
         final Face fourthSide = rubikFaces.get(3);
         final int[] fourthSideFirstColumn = fourthSide.getColumn(0);
@@ -76,10 +75,6 @@ public class Rubik implements Cloneable {
 
     public final Rubik half() {
         return this.left().left();
-    }
-
-    private static int[] reverseIntArray(int[] intArray) {
-        return IntStream.rangeClosed(1, intArray.length).map(i -> intArray[intArray.length - i]).toArray();
     }
 
     private static ArrayList<Face> cloneFaces(ArrayList<Face> faces) {
