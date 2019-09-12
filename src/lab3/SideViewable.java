@@ -1,15 +1,15 @@
 package lab3;
 
 public interface SideViewable {
-    Rubik rightView();
+    Object rightView();
 
-    Rubik leftView();
+    Object leftView();
 
-    Rubik upView();
+    Object upView();
 
-    Rubik downView();
+    Object downView();
 
-    Rubik backView();
+    Object backView();
 
-    Rubik frontView();
+    Object frontView();
 }
