@@ -2,7 +2,7 @@ package lab3;
 
 import java.util.ArrayList;
 
-public class Rubik implements Cloneable {
+public class Rubik implements Cloneable, SideViewable {
     private final ArrayList<Face> faces;
 
     Rubik(int[][][] grid) {
@@ -75,6 +75,50 @@ public class Rubik implements Cloneable {
 
     public final Rubik half() {
         return this.left().left();
+    }
+
+    public final Rubik rightView() {
+        return this;
+    }
+
+    public final Rubik leftView() {
+        return this;
+    }
+
+    public final Rubik upView() {
+        Rubik rubikClone = this.clone();
+        final ArrayList<Face> rubikFaces = Rubik.cloneFaces(rubikClone.faces);
+
+        final Face firstSide = rubikFaces.get(0).clone();
+        final Face secondSide = rubikFaces.get(1).clone();
+        final Face thirdSide = rubikFaces.get(2).clone();
+        final Face fourthSide = rubikFaces.get(3).clone();
+        final Face fifthSide = rubikFaces.get(4).clone();
+        final Face sixthSide = rubikFaces.get(5).clone();
+
+        final Face rotatedSecondSide = secondSide.right();
+        final Face rotatedFourthSide = fourthSide.left();
+
+        rubikFaces.set(0, sixthSide);
+        rubikFaces.set(1, rotatedSecondSide);
+        rubikFaces.set(2, firstSide);
+        rubikFaces.set(3, rotatedFourthSide);
+        rubikFaces.set(4, thirdSide);
+        rubikFaces.set(5, fifthSide);
+
+        return new Rubik(rubikFaces);
+    }
+
+    public final Rubik downView() {
+        return this;
+    }
+
+    public final Rubik backView() {
+        return this;
+    }
+
+    public final Rubik frontView() {
+        return this;
     }
 
     private static ArrayList<Face> cloneFaces(ArrayList<Face> faces) {
