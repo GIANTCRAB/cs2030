@@ -78,11 +78,33 @@ public class Rubik implements Cloneable, SideViewable {
     }
 
     public final Rubik rightView() {
-        return this;
+        Rubik rubikClone = this.clone();
+        final ArrayList<Face> rubikFaces = Rubik.cloneFaces(rubikClone.faces);
+
+        final Face firstSide = rubikFaces.get(0).clone();
+        final Face secondSide = rubikFaces.get(1).clone();
+        final Face thirdSide = rubikFaces.get(2).clone();
+        final Face fourthSide = rubikFaces.get(3).clone();
+        final Face fifthSide = rubikFaces.get(4).clone();
+        final Face sixthSide = rubikFaces.get(5).clone();
+
+        final Face rotatedFirstSide = firstSide.right();
+        final Face rotatedSecondSide = secondSide.half();
+        final Face rotatedFifthSide = fifthSide.left();
+        final Face rotatedSixthSide = sixthSide.half();
+
+        rubikFaces.set(0, rotatedFirstSide);
+        rubikFaces.set(1, thirdSide);
+        rubikFaces.set(2, fourthSide);
+        rubikFaces.set(3, rotatedSixthSide);
+        rubikFaces.set(4, rotatedFifthSide);
+        rubikFaces.set(5, rotatedSecondSide);
+
+        return new Rubik(rubikFaces);
     }
 
     public final Rubik leftView() {
-        return this;
+        return this.rightView().rightView().rightView();
     }
 
     public final Rubik upView() {
@@ -110,15 +132,15 @@ public class Rubik implements Cloneable, SideViewable {
     }
 
     public final Rubik downView() {
-        return this;
+        return this.upView().upView().upView();
     }
 
     public final Rubik backView() {
-        return this;
+        return this.rightView().rightView();
     }
 
     public final Rubik frontView() {
-        return this;
+        return this.clone();
     }
 
     private static ArrayList<Face> cloneFaces(ArrayList<Face> faces) {
