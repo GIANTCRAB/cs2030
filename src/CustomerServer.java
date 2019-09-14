@@ -8,11 +8,11 @@ public class CustomerServer implements Comparable<CustomerServer> {
     }
 
     public Integer getId() {
-        return id;
+        return this.id;
     }
 
     public int getIntId() {
-        return id;
+        return this.id;
     }
 
     public double getAvailableTime() {
@@ -20,7 +20,7 @@ public class CustomerServer implements Comparable<CustomerServer> {
     }
 
     public boolean canServe(Customer otherCustomer) {
-        return this.getCurrentlyServing() == null || this.getAvailableTime() >= otherCustomer.getArrivalTime();
+        return this.getCurrentlyServing() == null || this.getAvailableTime() >= (otherCustomer.getArrivalTime() + otherCustomer.getServiceTime());
     }
 
     public CustomerServer serve(Customer customer) {
@@ -32,7 +32,7 @@ public class CustomerServer implements Comparable<CustomerServer> {
     }
 
     private Customer getCurrentlyServing() {
-        return currentlyServing;
+        return this.currentlyServing;
     }
 
     @Override

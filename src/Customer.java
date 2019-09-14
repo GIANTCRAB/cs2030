@@ -9,19 +9,19 @@ public class Customer implements Comparable<Customer> {
     }
 
     public Integer getId() {
-        return id;
+        return this.id;
     }
 
     private int getIdInt() {
-        return id;
+        return this.id;
     }
 
     public double getServiceTime() {
-        return SERVICE_TIME;
+        return Customer.SERVICE_TIME;
     }
 
     public double getArrivalTime() {
-        return arrivalTime;
+        return this.arrivalTime;
     }
 
     @Override
