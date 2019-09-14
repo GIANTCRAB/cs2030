@@ -39,7 +39,7 @@ public class Customer implements Comparable<Customer> {
     }
 
     public String getCurrentStateInString() {
-        return currentState.toString().toLowerCase();
+        return this.getCurrentState().toString().toLowerCase();
     }
 
     public Customer setStateToServed() {
