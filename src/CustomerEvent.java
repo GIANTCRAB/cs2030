@@ -1,4 +1,4 @@
-public class CustomerEvent implements Comparable<CustomerEvent> {
+public class CustomerEvent {
     private final Customer customer;
     private final double eventTime;
     private final CustomerStates eventAction;
@@ -21,15 +21,8 @@ public class CustomerEvent implements Comparable<CustomerEvent> {
         return this.eventAction;
     }
 
-    /**
-     * TODO: Add time into consideration for prioritization
-     *
-     * @param customerEvent CustomerEvent
-     * @return int
-     */
-    @Override
-    public int compareTo(CustomerEvent customerEvent) {
-        return this.getCustomer().getId().compareTo(customerEvent.getCustomer().getId());
+    public double getEventTime() {
+        return this.eventTime;
     }
 
     @Override
