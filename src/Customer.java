@@ -1,18 +1,14 @@
 public class Customer implements Comparable<Customer> {
-    private enum AVAILABLE_STATES {
-        ARRIVES, SERVED, LEAVES
-    }
-
-    private final AVAILABLE_STATES currentState;
+    private final CustomerStates currentState;
     private final Integer id;
     private final double arrivalTime;
     private static final double SERVICE_TIME = 1.0;
 
     public Customer(int id, double arrivalTime) {
-        this(id, arrivalTime, AVAILABLE_STATES.ARRIVES);
+        this(id, arrivalTime, CustomerStates.ARRIVES);
     }
 
-    public Customer(int id, double arrivalTime, AVAILABLE_STATES currentState) {
+    public Customer(int id, double arrivalTime, CustomerStates currentState) {
         this.id = id;
         this.arrivalTime = arrivalTime;
         this.currentState = currentState;
@@ -34,7 +30,11 @@ public class Customer implements Comparable<Customer> {
         return this.arrivalTime;
     }
 
-    public AVAILABLE_STATES getCurrentState() {
+    public double getDoneTime() {
+        return this.getArrivalTime() + this.getServiceTime();
+    }
+
+    public CustomerStates getCurrentState() {
         return currentState;
     }
 
@@ -42,12 +42,16 @@ public class Customer implements Comparable<Customer> {
         return this.getCurrentState().toString().toLowerCase();
     }
 
+    public Customer setState(CustomerStates newState) {
+        return new Customer(this.getIdInt(), this.getArrivalTime(), newState);
+    }
+
     public Customer setStateToServed() {
-        return new Customer(this.getIdInt(), this.getArrivalTime(), AVAILABLE_STATES.SERVED);
+        return new Customer(this.getIdInt(), this.getArrivalTime(), CustomerStates.SERVED);
     }
 
     public Customer setStateToLeaves() {
-        return new Customer(this.getIdInt(), this.getArrivalTime(), AVAILABLE_STATES.LEAVES);
+        return new Customer(this.getIdInt(), this.getArrivalTime(), CustomerStates.LEAVES);
     }
 
     @Override
