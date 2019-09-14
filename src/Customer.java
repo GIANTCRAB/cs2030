@@ -1,4 +1,4 @@
-public class Customer implements Comparable<Customer> {
+public class Customer {
     private final CustomerStates currentState;
     private final Integer id;
     private final double arrivalTime;
@@ -45,10 +45,5 @@ public class Customer implements Comparable<Customer> {
     @Override
     public String toString() {
         return String.format("%.3f %d %s", this.getArrivalTime(), this.getIdInt(), this.getCurrentState().getStateInLowerCaseString());
-    }
-
-    @Override
-    public int compareTo(Customer customer) {
-        return this.getId().compareTo(customer.getId());
     }
 }

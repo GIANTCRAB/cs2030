@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
@@ -21,20 +22,17 @@ public class Main {
 
     private static void processCustomerQueue(ArrayList<Customer> customerArrayList) {
         CustomerServer customerServer = new CustomerServer(1, null);
-        final PriorityQueue<CustomerEvent> customerEventPriorityQueue = new PriorityQueue<>();
+        final PriorityQueue<CustomerEvent> customerEventPriorityQueue = new PriorityQueue<>(customerArrayList.size() + 1, new CustomerEventComparator());
 
         System.out.println("# Adding arrivals");
         for (Customer customer : customerArrayList) {
             final CustomerEvent customerEvent = new CustomerEvent(customer, customer.getArrivalTime(), CustomerStates.ARRIVES);
-            customerEventPriorityQueue.add(customerEvent);
+            customerEventPriorityQueue.offer(customerEvent);
         }
         Main.outputCustomerEventCurrentStatus(customerEventPriorityQueue);
 
-        while (true) {
+        while (!customerEventPriorityQueue.isEmpty()) {
             CustomerEvent customerEvent = customerEventPriorityQueue.poll();
-            if (customerEvent == null) {
-                break;
-            }
 
             System.out.println("# Get next event: " + customerEvent.toString());
             final Customer customer = customerEvent.consumeEvent();
@@ -45,16 +43,16 @@ public class Main {
                 if (customerServer.canServe(customer)) {
                     customerServer = customerServer.serve(customer);
                     final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getArrivalTime(), CustomerStates.SERVED);
-                    customerEventPriorityQueue.add(newCustomerEvent);
+                    customerEventPriorityQueue.offer(newCustomerEvent);
                 } else {
                     final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getArrivalTime(), CustomerStates.LEAVES);
-                    customerEventPriorityQueue.add(newCustomerEvent);
+                    customerEventPriorityQueue.offer(newCustomerEvent);
                 }
             }
 
             if (customerEvent.getEventAction() == CustomerStates.SERVED) {
                 final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getDoneTime(), CustomerStates.DONE);
-                customerEventPriorityQueue.add(newCustomerEvent);
+                customerEventPriorityQueue.offer(newCustomerEvent);
             }
 
             customerEventPriorityQueue.remove(customerEvent);
@@ -65,7 +63,9 @@ public class Main {
     }
 
     private static void outputCustomerEventCurrentStatus(PriorityQueue<CustomerEvent> customerEventPriorityQueue) {
-        for (CustomerEvent customerEvent : customerEventPriorityQueue) {
+        final CustomerEvent[] customerEventArray = customerEventPriorityQueue.toArray(new CustomerEvent[customerEventPriorityQueue.size()]);
+        Arrays.sort(customerEventArray, new CustomerEventComparator());
+        for (CustomerEvent customerEvent : customerEventArray) {
             System.out.println(customerEvent.toString());
         }
     }
