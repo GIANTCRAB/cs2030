@@ -12,11 +12,13 @@ public class Main {
             System.out.println(customer.toString());
 
             if (customerServer.canServe(customer)) {
+                customer = customer.setStateToServed();
                 customerServer = customerServer.serve(customer);
-                System.out.println(customerServer.toString());
             } else {
-                System.out.println("Customer leaves");
+                customer = customer.setStateToLeaves();
             }
+
+            System.out.println(customer.toString());
         }
 
         System.out.println("Number of customers: " + customerPriorityQueue.size());
