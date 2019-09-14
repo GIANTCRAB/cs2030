@@ -42,14 +42,6 @@ public class Customer implements Comparable<Customer> {
         return new Customer(this.getIdInt(), this.getArrivalTime(), newState);
     }
 
-    public Customer setStateToServed() {
-        return new Customer(this.getIdInt(), this.getArrivalTime(), CustomerStates.SERVED);
-    }
-
-    public Customer setStateToLeaves() {
-        return new Customer(this.getIdInt(), this.getArrivalTime(), CustomerStates.LEAVES);
-    }
-
     @Override
     public String toString() {
         return String.format("%.3f %d %s", this.getArrivalTime(), this.getIdInt(), this.getCurrentState().getStateInLowerCaseString());
