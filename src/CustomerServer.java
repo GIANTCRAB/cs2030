@@ -16,7 +16,7 @@ public class CustomerServer implements Comparable<CustomerServer> {
     }
 
     public double getAvailableTime() {
-        return this.getCurrentlyServing().getArrivalTime() + this.getCurrentlyServing().getServiceTime();
+        return this.getCurrentlyServing().getDoneTime();
     }
 
     public boolean canServe(Customer otherCustomer) {
