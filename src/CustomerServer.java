@@ -1,4 +1,4 @@
-public class CustomerServer implements Comparable<CustomerServer> {
+public class CustomerServer {
     private final Integer id;
     private final Customer currentlyServing;
 
@@ -33,11 +33,6 @@ public class CustomerServer implements Comparable<CustomerServer> {
 
     private Customer getCurrentlyServing() {
         return this.currentlyServing;
-    }
-
-    @Override
-    public int compareTo(CustomerServer customerServer) {
-        return this.getId().compareTo(customerServer.getId());
     }
 
     @Override
