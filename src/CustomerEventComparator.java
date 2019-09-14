@@ -6,7 +6,6 @@ class CustomerEventComparator implements Comparator<CustomerEvent> {
             return -1;
         }
         if (customerEventOne.getEventTime() == customerEventTwo.getEventTime()) {
-            System.out.println(customerEventOne.getCustomer().getId().compareTo(customerEventTwo.getCustomer().getId()));
             return customerEventOne.getCustomer().getId().compareTo(customerEventTwo.getCustomer().getId());
         }
 
