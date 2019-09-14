@@ -38,10 +38,6 @@ public class Customer implements Comparable<Customer> {
         return currentState;
     }
 
-    public String getCurrentStateInString() {
-        return this.getCurrentState().toString().toLowerCase();
-    }
-
     public Customer setState(CustomerStates newState) {
         return new Customer(this.getIdInt(), this.getArrivalTime(), newState);
     }
@@ -56,7 +52,7 @@ public class Customer implements Comparable<Customer> {
 
     @Override
     public String toString() {
-        return String.format("%.3f %d %s", this.getArrivalTime(), this.getIdInt(), this.getCurrentStateInString());
+        return String.format("%.3f %d %s", this.getArrivalTime(), this.getIdInt(), this.getCurrentState().getStateInLowerCaseString());
     }
 
     @Override

@@ -1,3 +1,7 @@
 public enum CustomerStates {
-    ARRIVES, SERVED, LEAVES, DONE
+    ARRIVES, SERVED, LEAVES, DONE;
+
+    public String getStateInLowerCaseString() {
+        return this.toString().toLowerCase();
+    }
 }
