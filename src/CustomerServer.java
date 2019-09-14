@@ -20,7 +20,7 @@ public class CustomerServer implements Comparable<CustomerServer> {
     }
 
     public boolean canServe(Customer otherCustomer) {
-        return this.getCurrentlyServing() == null || this.getAvailableTime() >= (otherCustomer.getArrivalTime() + otherCustomer.getServiceTime());
+        return this.getCurrentlyServing() == null || this.getAvailableTime() <= otherCustomer.getArrivalTime();
     }
 
     public CustomerServer serve(Customer customer) {
