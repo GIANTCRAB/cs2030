@@ -47,7 +47,7 @@ public class CustomerServer {
     }
 
     public CustomerServer hasServed(Customer customer) {
-        if (customer.getIdInt() == this.getCurrentlyWaitServing().getIdInt()) {
+        if (this.getCurrentlyWaitServing() != null && customer.getIdInt() == this.getCurrentlyWaitServing().getIdInt()) {
             return new CustomerServer(this.getIntId(), customer, null);
         }
 
