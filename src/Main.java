@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
@@ -23,20 +22,17 @@ public class Main {
     private static void processCustomerQueue(ArrayList<Customer> customerArrayList) {
         final CustomerStatistics customerStatistics = new CustomerStatistics();
         CustomerServer customerServer = new CustomerServer(1, null, null);
-        final int MAX_WAITING_CUSTOMERS = 1;
         final PriorityQueue<CustomerEvent> customerEventPriorityQueue = new PriorityQueue<>(customerArrayList.size() + 1, new CustomerEventComparator());
 
-        System.out.println("# Adding arrivals");
         for (Customer customer : customerArrayList) {
             final CustomerEvent customerEvent = new CustomerEvent(customer, customer.getArrivalTime(), CustomerStates.ARRIVES);
             customerEventPriorityQueue.offer(customerEvent);
         }
-        Main.outputCustomerEventCurrentStatus(customerEventPriorityQueue);
 
         while (!customerEventPriorityQueue.isEmpty()) {
             CustomerEvent customerEvent = customerEventPriorityQueue.poll();
 
-            System.out.println("# Get next event: " + customerEvent.toString());
+            System.out.println(customerEvent.toString());
             final Customer customer = customerEvent.consumeEvent();
             customerArrayList.set(customer.getId() - 1, customer);
 
@@ -76,22 +72,12 @@ public class Main {
             }
 
             customerEventPriorityQueue.remove(customerEvent);
-            Main.outputCustomerEventCurrentStatus(customerEventPriorityQueue);
         }
 
-        System.out.println("Number of customers: " + customerArrayList.size());
         System.out.printf("[%.3f %d %d]",
                 customerStatistics.computeAverageWaitingTime(),
                 customerStatistics.getNumberOfCustomersServed(),
                 customerStatistics.getNumberOfCustomersLeaves()
         );
-    }
-
-    private static void outputCustomerEventCurrentStatus(PriorityQueue<CustomerEvent> customerEventPriorityQueue) {
-        final CustomerEvent[] customerEventArray = customerEventPriorityQueue.toArray(new CustomerEvent[customerEventPriorityQueue.size()]);
-        Arrays.sort(customerEventArray, new CustomerEventComparator());
-        for (CustomerEvent customerEvent : customerEventArray) {
-            System.out.println(customerEvent.toString());
-        }
     }
 }
