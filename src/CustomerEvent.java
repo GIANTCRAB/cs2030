@@ -23,7 +23,7 @@ public class CustomerEvent {
         return this.customer;
     }
 
-    private CustomerServer getCustomerServer() {
+    public CustomerServer getCustomerServer() {
         return this.customerServer;
     }
 

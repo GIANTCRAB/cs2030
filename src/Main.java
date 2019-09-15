@@ -4,24 +4,35 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        final ArrayList<Customer> customerArrayList = Main.readCustomerQueueInputs();
-        Main.processCustomerQueue(customerArrayList);
+        Scanner reader = new Scanner(System.in);
+        final ArrayList<CustomerServer> customerServerArrayList = Main.readCustomerServerInputs(reader);
+        final ArrayList<Customer> customerArrayList = Main.readCustomerQueueInputs(reader);
+        reader.close();
+        Main.processCustomerQueue(customerArrayList, customerServerArrayList);
     }
 
-    private static ArrayList<Customer> readCustomerQueueInputs() {
+    private static ArrayList<CustomerServer> readCustomerServerInputs(Scanner reader) {
+        final ArrayList<CustomerServer> customerServerArrayList = new ArrayList<>();
+        final int customerServersAvailable = reader.nextInt();
+        for (int i = 0; i < customerServersAvailable; i++) {
+            final CustomerServer customerServer = new CustomerServer(i + 1, null, null);
+            customerServerArrayList.add(customerServer);
+        }
+
+        return customerServerArrayList;
+    }
+
+    private static ArrayList<Customer> readCustomerQueueInputs(Scanner reader) {
         final ArrayList<Customer> customerArrayList = new ArrayList<>();
-        Scanner reader = new Scanner(System.in);
         while (reader.hasNextDouble()) {
             customerArrayList.add(new Customer(customerArrayList.size() + 1, reader.nextDouble()));
         }
-        reader.close();
 
         return customerArrayList;
     }
 
-    private static void processCustomerQueue(ArrayList<Customer> customerArrayList) {
+    private static void processCustomerQueue(ArrayList<Customer> customerArrayList, ArrayList<CustomerServer> customerServerArrayList) {
         final CustomerStatistics customerStatistics = new CustomerStatistics();
-        CustomerServer customerServer = new CustomerServer(1, null, null);
         final PriorityQueue<CustomerEvent> customerEventPriorityQueue = new PriorityQueue<>(customerArrayList.size() + 1, new CustomerEventComparator());
 
         for (Customer customer : customerArrayList) {
@@ -36,39 +47,74 @@ public class Main {
             final Customer customer = customerEvent.consumeEvent();
             customerArrayList.set(customer.getId() - 1, customer);
 
-            // Process based on actions
-            if (customerEvent.getEventAction() == CustomerStates.ARRIVES) {
-                if (customerServer.canServe(customer)) {
-                    customerServer = customerServer.serve(customer);
-                    final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customerServer, customer.getServiceStartTime(), CustomerStates.SERVED);
-                    customerEventPriorityQueue.offer(newCustomerEvent);
-                } else {
+            boolean customerHasBeenProcess = false;
+            for (CustomerServer customerServer : customerServerArrayList) {
+                // Process based on actions
+                if (customerEvent.getEventAction() == CustomerStates.ARRIVES) {
+                    if (customerServer.canServe(customer)) {
+                        customerServer = customerServer.serve(customer);
+                        customerServerArrayList.set(customerServer.getId() - 1, customerServer);
+                        final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customerServer, customer.getServiceStartTime(), CustomerStates.SERVED);
+                        customerEventPriorityQueue.offer(newCustomerEvent);
+
+                        customerHasBeenProcess = true;
+                        break;
+                    }
+                }
+
+                if (customerEvent.getEventAction() == CustomerStates.WAITS) {
+                    if (customerEvent.getCustomerServer() != null && customerEvent.getCustomerServer().getIntId() == customerServer.getIntId()) {
+                        final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customerServer, customer.getServiceStartTime(), CustomerStates.SERVED);
+                        customerEventPriorityQueue.offer(newCustomerEvent);
+
+                        customerHasBeenProcess = true;
+                        break;
+                    }
+                }
+
+                if (customerEvent.getEventAction() == CustomerStates.SERVED) {
+                    if (customerEvent.getCustomerServer() != null && customerEvent.getCustomerServer().getIntId() == customerServer.getIntId()) {
+                        final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customerServer, customer.getDoneTime(), CustomerStates.DONE);
+                        customerEventPriorityQueue.offer(newCustomerEvent);
+                        customerStatistics.incrementNumberOfCustomersServed();
+                        customerServer = customerServer.hasServed(customer);
+                        customerServerArrayList.set(customerServer.getId() - 1, customerServer);
+
+                        customerHasBeenProcess = true;
+                        break;
+                    }
+                }
+
+                if (customerEvent.getEventAction() == CustomerStates.LEAVES || customerEvent.getEventAction() == CustomerStates.DONE) {
+                    customerHasBeenProcess = true;
+                    break;
+                }
+            }
+
+            if (!customerHasBeenProcess) {
+                // Try to see if customer can be added to waiting list
+                for (CustomerServer customerServer : customerServerArrayList) {
                     if (customerServer.canWaitServe()) {
                         final double waitingTime = customerServer.getAvailableTime() - customer.getArrivalTime();
                         final Customer waitingCustomer = new Customer(customer.getId(), customer.getArrivalTime(), waitingTime, customer.getCurrentState());
                         customerArrayList.set(waitingCustomer.getId() - 1, waitingCustomer);
                         customerServer = customerServer.waitServe(waitingCustomer);
+                        customerServerArrayList.set(customerServer.getId() - 1, customerServer);
                         final CustomerEvent newCustomerEvent = new CustomerEvent(waitingCustomer, customerServer, waitingCustomer.getArrivalTime(), CustomerStates.WAITS);
                         customerEventPriorityQueue.offer(newCustomerEvent);
                         customerStatistics.incrementTotalWaitingTime(waitingTime);
-                    } else {
-                        final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getArrivalTime(), CustomerStates.LEAVES);
-                        customerEventPriorityQueue.offer(newCustomerEvent);
-                        customerStatistics.incrementNumberOfCustomersLeaves();
+
+                        customerHasBeenProcess = true;
+                        break;
                     }
                 }
             }
 
-            if (customerEvent.getEventAction() == CustomerStates.WAITS) {
-                final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customerServer, customer.getServiceStartTime(), CustomerStates.SERVED);
+            if (!customerHasBeenProcess) {
+                // Customer cannot be served, nor can wait
+                final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getArrivalTime(), CustomerStates.LEAVES);
                 customerEventPriorityQueue.offer(newCustomerEvent);
-            }
-
-            if (customerEvent.getEventAction() == CustomerStates.SERVED) {
-                final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customerServer, customer.getDoneTime(), CustomerStates.DONE);
-                customerEventPriorityQueue.offer(newCustomerEvent);
-                customerStatistics.incrementNumberOfCustomersServed();
-                customerServer = customerServer.hasServed(customer);
+                customerStatistics.incrementNumberOfCustomersLeaves();
             }
 
             customerEventPriorityQueue.remove(customerEvent);
