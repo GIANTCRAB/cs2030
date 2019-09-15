@@ -1,7 +1,7 @@
 public class CustomerServer {
     private final Integer id;
-    private final Customer currentlyServing;
-    private final Customer currentlyWaitServing;
+    private Customer currentlyServing;
+    private Customer currentlyWaitServing;
 
     public CustomerServer(int id, Customer currentlyServing, Customer currentlyWaitServing) {
         this.id = id;
@@ -10,10 +10,6 @@ public class CustomerServer {
     }
 
     public Integer getId() {
-        return this.id;
-    }
-
-    public int getIntId() {
         return this.id;
     }
 
@@ -40,15 +36,17 @@ public class CustomerServer {
 
     public CustomerServer serve(Customer customer) {
         if (this.canServe(customer)) {
-            return new CustomerServer(this.getIntId(), customer, this.getCurrentlyWaitServing());
+            this.currentlyServing = customer;
+            return this;
         }
 
         return null;
     }
 
     public CustomerServer hasServed(Customer customer) {
-        if (this.getCurrentlyWaitServing() != null && customer.getIdInt() == this.getCurrentlyWaitServing().getIdInt()) {
-            return new CustomerServer(this.getIntId(), customer, null);
+        if (this.getCurrentlyWaitServing() != null && customer == this.getCurrentlyWaitServing()) {
+            this.currentlyServing = customer;
+            this.currentlyWaitServing = null;
         }
 
         return this;
@@ -56,7 +54,8 @@ public class CustomerServer {
 
     public CustomerServer waitServe(Customer customer) {
         if (this.canWaitServe()) {
-            return new CustomerServer(this.getIntId(), this.getCurrentlyServing(), customer);
+            this.currentlyWaitServing = customer;
+            return this;
         }
 
         return null;

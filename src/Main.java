@@ -45,7 +45,6 @@ public class Main {
 
             System.out.println(customerEvent.toString());
             final Customer customer = customerEvent.consumeEvent();
-            customerArrayList.set(customer.getId() - 1, customer);
 
             boolean customerHasBeenProcess = false;
             for (CustomerServer customerServer : customerServerArrayList) {
@@ -53,7 +52,6 @@ public class Main {
                 if (customerEvent.getEventAction() == CustomerStates.ARRIVES) {
                     if (customerServer.canServe(customer)) {
                         customerServer = customerServer.serve(customer);
-                        customerServerArrayList.set(customerServer.getId() - 1, customerServer);
                         final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customerServer, customer.getServiceStartTime(), CustomerStates.SERVED);
                         customerEventPriorityQueue.offer(newCustomerEvent);
 
@@ -63,7 +61,7 @@ public class Main {
                 }
 
                 if (customerEvent.getEventAction() == CustomerStates.WAITS) {
-                    if (customerEvent.getCustomerServer() != null && customerEvent.getCustomerServer().getIntId() == customerServer.getIntId()) {
+                    if (customerEvent.getCustomerServer() != null && customerEvent.getCustomerServer() == customerServer) {
                         final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customerServer, customer.getServiceStartTime(), CustomerStates.SERVED);
                         customerEventPriorityQueue.offer(newCustomerEvent);
 
@@ -73,12 +71,11 @@ public class Main {
                 }
 
                 if (customerEvent.getEventAction() == CustomerStates.SERVED) {
-                    if (customerEvent.getCustomerServer() != null && customerEvent.getCustomerServer().getIntId() == customerServer.getIntId()) {
+                    if (customerEvent.getCustomerServer() != null && customerEvent.getCustomerServer() == customerServer) {
                         final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customerServer, customer.getDoneTime(), CustomerStates.DONE);
                         customerEventPriorityQueue.offer(newCustomerEvent);
                         customerStatistics.incrementNumberOfCustomersServed();
-                        customerServer = customerServer.hasServed(customer);
-                        customerServerArrayList.set(customerServer.getId() - 1, customerServer);
+                        customerServer.hasServed(customer);
 
                         customerHasBeenProcess = true;
                         break;
@@ -96,11 +93,9 @@ public class Main {
                 for (CustomerServer customerServer : customerServerArrayList) {
                     if (customerServer.canWaitServe()) {
                         final double waitingTime = customerServer.getAvailableTime() - customer.getArrivalTime();
-                        final Customer waitingCustomer = new Customer(customer.getId(), customer.getArrivalTime(), waitingTime, customer.getCurrentState());
-                        customerArrayList.set(waitingCustomer.getId() - 1, waitingCustomer);
-                        customerServer = customerServer.waitServe(waitingCustomer);
-                        customerServerArrayList.set(customerServer.getId() - 1, customerServer);
-                        final CustomerEvent newCustomerEvent = new CustomerEvent(waitingCustomer, customerServer, waitingCustomer.getArrivalTime(), CustomerStates.WAITS);
+                        customer.setWaitingTime(waitingTime);
+                        customerServer.waitServe(customer);
+                        final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customerServer, customer.getArrivalTime(), CustomerStates.WAITS);
                         customerEventPriorityQueue.offer(newCustomerEvent);
                         customerStatistics.incrementTotalWaitingTime(waitingTime);
 

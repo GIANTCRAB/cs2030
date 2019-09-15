@@ -1,12 +1,12 @@
 public class Customer {
-    private final CustomerStates currentState;
+    private CustomerStates currentState;
     private final Integer id;
-    private final double arrivalTime;
-    private final double waitingTime;
+    private double arrivalTime;
+    private double waitingTime;
     private static final double SERVICE_TIME = 1.0;
 
     public Customer(int id, double arrivalTime) {
-        this(id, arrivalTime, CustomerStates.ARRIVES);
+        this(id, arrivalTime, null);
     }
 
     public Customer(int id, double arrivalTime, CustomerStates currentState) {
@@ -24,10 +24,6 @@ public class Customer {
         return this.id;
     }
 
-    public int getIdInt() {
-        return this.id;
-    }
-
     public double getServiceTime() {
         return Customer.SERVICE_TIME;
     }
@@ -38,6 +34,11 @@ public class Customer {
 
     public double getWaitingTime() {
         return this.waitingTime;
+    }
+
+    public Customer setWaitingTime(double waitingTime) {
+        this.waitingTime = waitingTime;
+        return this;
     }
 
     public double getServiceStartTime() {
@@ -53,11 +54,12 @@ public class Customer {
     }
 
     public Customer setState(CustomerStates newState) {
-        return new Customer(this.getIdInt(), this.getArrivalTime(), this.getWaitingTime(), newState);
+        this.currentState = newState;
+        return this;
     }
 
     @Override
     public String toString() {
-        return String.format("%.3f %d %s", this.getArrivalTime(), this.getIdInt(), this.getCurrentState().getStateInLowerCaseString());
+        return String.format("%.3f %d %s", this.getArrivalTime(), this.getId(), this.getCurrentState().getStateInLowerCaseString());
     }
 }
