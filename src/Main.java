@@ -115,7 +115,7 @@ public class Main {
             customerEventPriorityQueue.remove(customerEvent);
         }
 
-        System.out.printf("[%.3f %d %d]",
+        System.out.printf("[%.3f %d %d]\n",
                 customerStatistics.computeAverageWaitingTime(),
                 customerStatistics.getNumberOfCustomersServed(),
                 customerStatistics.getNumberOfCustomersLeaves()
