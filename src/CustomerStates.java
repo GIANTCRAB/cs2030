@@ -1,5 +1,5 @@
 public enum CustomerStates {
-    ARRIVES, SERVED, LEAVES, DONE;
+    ARRIVES, SERVED, WAITS, LEAVES, DONE;
 
     public String getStateInLowerCaseString() {
         return this.toString().toLowerCase();

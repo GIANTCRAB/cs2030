@@ -21,6 +21,8 @@ public class Main {
     }
 
     private static void processCustomerQueue(ArrayList<Customer> customerArrayList) {
+        double nextWaitSlot = 0.0;
+        final CustomerStatistics customerStatistics = new CustomerStatistics();
         CustomerServer customerServer = new CustomerServer(1, null);
         final PriorityQueue<CustomerEvent> customerEventPriorityQueue = new PriorityQueue<>(customerArrayList.size() + 1, new CustomerEventComparator());
 
@@ -45,14 +47,31 @@ public class Main {
                     final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getArrivalTime(), CustomerStates.SERVED);
                     customerEventPriorityQueue.offer(newCustomerEvent);
                 } else {
-                    final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getArrivalTime(), CustomerStates.LEAVES);
-                    customerEventPriorityQueue.offer(newCustomerEvent);
+                    if (nextWaitSlot <= customer.getArrivalTime()) {
+                        final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getArrivalTime(), CustomerStates.WAITS);
+                        customerEventPriorityQueue.offer(newCustomerEvent);
+                        nextWaitSlot = customerServer.getAvailableTime();
+                    } else {
+                        final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getArrivalTime(), CustomerStates.LEAVES);
+                        customerEventPriorityQueue.offer(newCustomerEvent);
+                        customerStatistics.incrementNumberOfCustomersLeaves();
+                    }
                 }
+            }
+
+            if (customerEvent.getEventAction() == CustomerStates.WAITS) {
+                final Customer waitingCustomer = new Customer(customer.getId(), nextWaitSlot, customer.getCurrentState());
+                customerArrayList.set(waitingCustomer.getId() - 1, waitingCustomer);
+                customerServer = customerServer.serve(waitingCustomer);
+                final CustomerEvent newCustomerEvent = new CustomerEvent(waitingCustomer, nextWaitSlot, CustomerStates.SERVED);
+                customerStatistics.incrementTotalWaitingTime(nextWaitSlot - customer.getArrivalTime());
+                customerEventPriorityQueue.offer(newCustomerEvent);
             }
 
             if (customerEvent.getEventAction() == CustomerStates.SERVED) {
                 final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getDoneTime(), CustomerStates.DONE);
                 customerEventPriorityQueue.offer(newCustomerEvent);
+                customerStatistics.incrementNumberOfCustomersServed();
             }
 
             customerEventPriorityQueue.remove(customerEvent);
@@ -60,6 +79,11 @@ public class Main {
         }
 
         System.out.println("Number of customers: " + customerArrayList.size());
+        System.out.printf("[%.3f %d %d]",
+                customerStatistics.computeAverageWaitingTime(),
+                customerStatistics.getNumberOfCustomersServed(),
+                customerStatistics.getNumberOfCustomersLeaves()
+        );
     }
 
     private static void outputCustomerEventCurrentStatus(PriorityQueue<CustomerEvent> customerEventPriorityQueue) {
