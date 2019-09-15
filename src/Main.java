@@ -44,7 +44,7 @@ public class Main {
             if (customerEvent.getEventAction() == CustomerStates.ARRIVES) {
                 if (customerServer.canServe(customer)) {
                     customerServer = customerServer.serve(customer);
-                    final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getServiceStartTime(), CustomerStates.SERVED);
+                    final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customerServer, customer.getServiceStartTime(), CustomerStates.SERVED);
                     customerEventPriorityQueue.offer(newCustomerEvent);
                 } else {
                     if (customerServer.canWaitServe()) {
@@ -52,7 +52,7 @@ public class Main {
                         final Customer waitingCustomer = new Customer(customer.getId(), customer.getArrivalTime(), waitingTime, customer.getCurrentState());
                         customerArrayList.set(waitingCustomer.getId() - 1, waitingCustomer);
                         customerServer = customerServer.waitServe(waitingCustomer);
-                        final CustomerEvent newCustomerEvent = new CustomerEvent(waitingCustomer, waitingCustomer.getArrivalTime(), CustomerStates.WAITS);
+                        final CustomerEvent newCustomerEvent = new CustomerEvent(waitingCustomer, customerServer, waitingCustomer.getArrivalTime(), CustomerStates.WAITS);
                         customerEventPriorityQueue.offer(newCustomerEvent);
                         customerStatistics.incrementTotalWaitingTime(waitingTime);
                     } else {
@@ -64,12 +64,12 @@ public class Main {
             }
 
             if (customerEvent.getEventAction() == CustomerStates.WAITS) {
-                final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getServiceStartTime(), CustomerStates.SERVED);
+                final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customerServer, customer.getServiceStartTime(), CustomerStates.SERVED);
                 customerEventPriorityQueue.offer(newCustomerEvent);
             }
 
             if (customerEvent.getEventAction() == CustomerStates.SERVED) {
-                final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getDoneTime(), CustomerStates.DONE);
+                final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customerServer, customer.getDoneTime(), CustomerStates.DONE);
                 customerEventPriorityQueue.offer(newCustomerEvent);
                 customerStatistics.incrementNumberOfCustomersServed();
                 customerServer = customerServer.hasServed(customer);
