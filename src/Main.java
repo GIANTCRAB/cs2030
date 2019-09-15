@@ -21,9 +21,9 @@ public class Main {
     }
 
     private static void processCustomerQueue(ArrayList<Customer> customerArrayList) {
-        double nextWaitSlot = 0.0;
         final CustomerStatistics customerStatistics = new CustomerStatistics();
-        CustomerServer customerServer = new CustomerServer(1, null);
+        CustomerServer customerServer = new CustomerServer(1, null, null);
+        final int MAX_WAITING_CUSTOMERS = 1;
         final PriorityQueue<CustomerEvent> customerEventPriorityQueue = new PriorityQueue<>(customerArrayList.size() + 1, new CustomerEventComparator());
 
         System.out.println("# Adding arrivals");
@@ -44,13 +44,17 @@ public class Main {
             if (customerEvent.getEventAction() == CustomerStates.ARRIVES) {
                 if (customerServer.canServe(customer)) {
                     customerServer = customerServer.serve(customer);
-                    final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getArrivalTime(), CustomerStates.SERVED);
+                    final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getServiceStartTime(), CustomerStates.SERVED);
                     customerEventPriorityQueue.offer(newCustomerEvent);
                 } else {
-                    if (nextWaitSlot <= customer.getArrivalTime()) {
-                        final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getArrivalTime(), CustomerStates.WAITS);
+                    if (customerServer.canWaitServe()) {
+                        final double waitingTime = customerServer.getAvailableTime() - customer.getArrivalTime();
+                        final Customer waitingCustomer = new Customer(customer.getId(), customer.getArrivalTime(), waitingTime, customer.getCurrentState());
+                        customerArrayList.set(waitingCustomer.getId() - 1, waitingCustomer);
+                        customerServer = customerServer.waitServe(waitingCustomer);
+                        final CustomerEvent newCustomerEvent = new CustomerEvent(waitingCustomer, waitingCustomer.getArrivalTime(), CustomerStates.WAITS);
                         customerEventPriorityQueue.offer(newCustomerEvent);
-                        nextWaitSlot = customerServer.getAvailableTime();
+                        customerStatistics.incrementTotalWaitingTime(waitingTime);
                     } else {
                         final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getArrivalTime(), CustomerStates.LEAVES);
                         customerEventPriorityQueue.offer(newCustomerEvent);
@@ -60,11 +64,7 @@ public class Main {
             }
 
             if (customerEvent.getEventAction() == CustomerStates.WAITS) {
-                final Customer waitingCustomer = new Customer(customer.getId(), nextWaitSlot, customer.getCurrentState());
-                customerArrayList.set(waitingCustomer.getId() - 1, waitingCustomer);
-                customerServer = customerServer.serve(waitingCustomer);
-                final CustomerEvent newCustomerEvent = new CustomerEvent(waitingCustomer, nextWaitSlot, CustomerStates.SERVED);
-                customerStatistics.incrementTotalWaitingTime(nextWaitSlot - customer.getArrivalTime());
+                final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getServiceStartTime(), CustomerStates.SERVED);
                 customerEventPriorityQueue.offer(newCustomerEvent);
             }
 
@@ -72,6 +72,7 @@ public class Main {
                 final CustomerEvent newCustomerEvent = new CustomerEvent(customer, customer.getDoneTime(), CustomerStates.DONE);
                 customerEventPriorityQueue.offer(newCustomerEvent);
                 customerStatistics.incrementNumberOfCustomersServed();
+                customerServer = customerServer.hasServed(customer);
             }
 
             customerEventPriorityQueue.remove(customerEvent);

@@ -2,6 +2,7 @@ public class Customer {
     private final CustomerStates currentState;
     private final Integer id;
     private final double arrivalTime;
+    private final double waitingTime;
     private static final double SERVICE_TIME = 1.0;
 
     public Customer(int id, double arrivalTime) {
@@ -9,8 +10,13 @@ public class Customer {
     }
 
     public Customer(int id, double arrivalTime, CustomerStates currentState) {
+        this(id, arrivalTime, 0.0, currentState);
+    }
+
+    public Customer(int id, double arrivalTime, double waitingTime, CustomerStates currentState) {
         this.id = id;
         this.arrivalTime = arrivalTime;
+        this.waitingTime = waitingTime;
         this.currentState = currentState;
     }
 
@@ -18,7 +24,7 @@ public class Customer {
         return this.id;
     }
 
-    private int getIdInt() {
+    public int getIdInt() {
         return this.id;
     }
 
@@ -30,8 +36,16 @@ public class Customer {
         return this.arrivalTime;
     }
 
+    public double getWaitingTime() {
+        return this.waitingTime;
+    }
+
+    public double getServiceStartTime() {
+        return this.getArrivalTime() + this.getWaitingTime();
+    }
+
     public double getDoneTime() {
-        return this.getArrivalTime() + this.getServiceTime();
+        return this.getServiceStartTime() + this.getServiceTime();
     }
 
     public CustomerStates getCurrentState() {
@@ -39,7 +53,7 @@ public class Customer {
     }
 
     public Customer setState(CustomerStates newState) {
-        return new Customer(this.getIdInt(), this.getArrivalTime(), newState);
+        return new Customer(this.getIdInt(), this.getArrivalTime(), this.getWaitingTime(), newState);
     }
 
     @Override
