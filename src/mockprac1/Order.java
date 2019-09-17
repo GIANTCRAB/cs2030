@@ -22,11 +22,15 @@ public class Order {
 
     @Override
     public String toString() {
+        int totalCost = 0;
         StringBuilder formattedString = new StringBuilder();
         for (MenuItem menuItem : this.orderedItems) {
-            formattedString.append(menuItem.toString());
             formattedString.append("\n");
+            formattedString.append(menuItem.toString());
+            totalCost += menuItem.getCost();
         }
+        formattedString.append("\nTotal: ");
+        formattedString.append(totalCost);
 
         return formattedString.toString();
     }
