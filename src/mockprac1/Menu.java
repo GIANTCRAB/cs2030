@@ -16,10 +16,10 @@ public class Menu {
         return food;
     }
 
-    public MenuItem add(String category, String comboName, List<Number> itemIdList) {
+    public MenuItem add(String category, String comboName, List<Integer> itemIdList) {
         final Combo comboItem = new Combo(this.menuItems.size(), category, comboName);
-        for (Number itemId : itemIdList) {
-            comboItem.addOtherItem(this.menuItems.get(itemId.intValue()));
+        for (Integer itemId : itemIdList) {
+            comboItem.addOtherItem(this.menuItems.get(itemId));
         }
         if (!this.categories.contains(category)) {
             this.categories.add(category);
