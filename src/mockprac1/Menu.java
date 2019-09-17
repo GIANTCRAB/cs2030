@@ -21,7 +21,6 @@ public class Menu {
         for (Integer itemId : itemIdList) {
             comboItem.addOtherItem(this.menuItems.get(itemId));
         }
-        this.categories.add(category);
         this.menuItems.add(comboItem);
         return comboItem;
     }
@@ -31,6 +30,7 @@ public class Menu {
     }
 
     public void print() {
+        this.categories.add("Combo");
         for (String category : this.categories) {
             for (MenuItem menuItem : this.menuItems) {
                 if (category.equals(menuItem.getCategory())) {
