@@ -1,3 +1,5 @@
+package project1;
+
 public class CustomerStatistics {
     private double totalWaitingTime;
     private int numberOfCustomersServed;

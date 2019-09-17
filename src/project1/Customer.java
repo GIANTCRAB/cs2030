@@ -1,3 +1,5 @@
+package project1;
+
 public class Customer {
     private CustomerStates currentState;
     private final Integer id;

@@ -1,3 +1,5 @@
+package project1;
+
 public class CustomerServer {
     private final Integer id;
     private Customer currentlyServing;

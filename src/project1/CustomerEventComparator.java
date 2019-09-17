@@ -1,3 +1,5 @@
+package project1;
+
 import java.util.Comparator;
 
 class CustomerEventComparator implements Comparator<CustomerEvent> {

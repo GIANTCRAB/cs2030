@@ -1,3 +1,5 @@
+package project1;
+
 public enum CustomerStates {
     ARRIVES, SERVED, WAITS, LEAVES, DONE;
 

@@ -1,3 +1,5 @@
+package project1;
+
 public class CustomerEvent {
     private final Customer customer;
     private final CustomerServer customerServer;
