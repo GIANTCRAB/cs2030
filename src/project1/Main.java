@@ -1,20 +1,21 @@
 package project1;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner reader = new Scanner(System.in);
-        final ArrayList<CustomerServer> customerServerArrayList = Main.readCustomerServerInputs(reader);
-        final ArrayList<Customer> customerArrayList = Main.readCustomerQueueInputs(reader);
+        final List<CustomerServer> customerServerArrayList = Main.readCustomerServerInputs(reader);
+        final List<Customer> customerArrayList = Main.readCustomerQueueInputs(reader);
         reader.close();
         Main.processCustomerQueue(customerArrayList, customerServerArrayList);
     }
 
-    private static ArrayList<CustomerServer> readCustomerServerInputs(Scanner reader) {
-        final ArrayList<CustomerServer> customerServerArrayList = new ArrayList<>();
+    private static List<CustomerServer> readCustomerServerInputs(Scanner reader) {
+        final List<CustomerServer> customerServerArrayList = new ArrayList<>();
         final int customerServersAvailable = reader.nextInt();
         for (int i = 0; i < customerServersAvailable; i++) {
             final CustomerServer customerServer = new CustomerServer(i + 1, null, null);
@@ -24,8 +25,8 @@ public class Main {
         return customerServerArrayList;
     }
 
-    private static ArrayList<Customer> readCustomerQueueInputs(Scanner reader) {
-        final ArrayList<Customer> customerArrayList = new ArrayList<>();
+    private static List<Customer> readCustomerQueueInputs(Scanner reader) {
+        final List<Customer> customerArrayList = new ArrayList<>();
         while (reader.hasNextDouble()) {
             customerArrayList.add(new Customer(customerArrayList.size() + 1, reader.nextDouble()));
         }
@@ -33,7 +34,7 @@ public class Main {
         return customerArrayList;
     }
 
-    private static void processCustomerQueue(ArrayList<Customer> customerArrayList, ArrayList<CustomerServer> customerServerArrayList) {
+    private static void processCustomerQueue(List<Customer> customerArrayList, List<CustomerServer> customerServerArrayList) {
         final CustomerStatistics customerStatistics = new CustomerStatistics();
         final PriorityQueue<CustomerEvent> customerEventPriorityQueue = new PriorityQueue<>(customerArrayList.size() + 1, new CustomerEventComparator());
 
