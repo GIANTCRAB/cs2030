@@ -20,6 +20,15 @@ public class Order {
         return this;
     }
 
+    public Order add(List<Integer> itemsIdToOrder) {
+        for (int itemIdToOrder : itemsIdToOrder) {
+            MenuItem menuItem = this.menu.get(itemIdToOrder);
+            this.orderedItems.add(menuItem);
+        }
+
+        return this;
+    }
+
     @Override
     public String toString() {
         int totalCost = 0;
