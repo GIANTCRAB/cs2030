@@ -1,7 +1,7 @@
 class TakeACab extends Ride {
-	TakeACab() {
-		super();
-		this.distanceCost = 33;
-		this.bookingFee = 200;
-	}
+    TakeACab() {
+        super();
+        this.distanceCost = 33;
+        this.bookingFee = 200;
+    }
 }

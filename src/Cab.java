@@ -1,25 +1,31 @@
 abstract class Cab {
-	private final String carPlateNumber;
-	private final int minutesAway;
+    private final String carPlateNumber;
+    private final Integer minutesAway;
+    private final Class<? extends Ride>[] servicesProvided;
 
-	Cab(String carPlateNumber, int minutesAway) {
-		this.carPlateNumber = carPlateNumber;
-		this.minutesAway = minutesAway;
-	}
+    Cab(String carPlateNumber, int minutesAway, Class<? extends Ride>[] servicesProvided) {
+        this.carPlateNumber = carPlateNumber;
+        this.minutesAway = minutesAway;
+        this.servicesProvided = servicesProvided;
+    }
 
-	public String getCarPlateNumber() {
-		return this.carPlateNumber;
-	}
+    public String getCarPlateNumber() {
+        return this.carPlateNumber;
+    }
 
-	public int getMinutesAway() {
-		return this.minutesAway;
-	}
+    public Integer getMinutesAway() {
+        return this.minutesAway;
+    }
 
-	public String getCabType() {
-		return this.getClass().getSimpleName();
-	}
+    public String getCabType() {
+        return this.getClass().getSimpleName();
+    }
 
-	public String toString() {
-		return String.format("%s (%d minutes away) %s", this.getCarPlateNumber(), this.getMinutesAway(), this.getCabType());
-	}
+    public Class<? extends Ride>[] getServicesProvided() {
+        return this.servicesProvided;
+    }
+
+    public String toString() {
+        return String.format("%s (%d minutes away) %s", this.getCarPlateNumber(), this.getMinutesAway(), this.getCabType());
+    }
 }
