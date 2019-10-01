@@ -1,4 +1,4 @@
-import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -12,7 +12,7 @@ public class Main {
         reader.close();
 
         final Collection<Booking> bookings = Main.createBookings(request, cabs);
-        final Booking[] bookingArray = bookings.toArray(new Booking[bookings.size()]);
+        final Booking[] bookingArray = bookings.toArray(new Booking[0]);
         Arrays.sort(bookingArray);
         for (Booking booking : bookingArray) {
             System.out.println(booking);
@@ -45,9 +45,9 @@ public class Main {
             for (Class<? extends Ride> rideType : rideTypes) {
                 if (cab.canProvideService(rideType)) {
                     try {
-                        final Ride ride = rideType.newInstance();
+                        final Ride ride = rideType.getDeclaredConstructor().newInstance();
                         bookingArrayList.add(new Booking(cab, ride, request));
-                    } catch (InstantiationException | IllegalAccessException e) {
+                    } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                         e.printStackTrace();
                     }
                 }
