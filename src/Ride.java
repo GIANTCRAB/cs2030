@@ -17,8 +17,7 @@ abstract class Ride {
 
     public Integer computeFare(Request request) {
         final int totalCost = this.bookingFee + request.getDistance() * this.distanceCost + this.getSurchargeCost(request);
-        // divide by 100 and multiply again to 'absorb' decimal cost
-        return this.costSharedWithPassengers ? totalCost / request.getNoOfPassengers() / 100 * 100 : totalCost;
+        return this.costSharedWithPassengers ? totalCost / request.getNoOfPassengers() : totalCost;
     }
 
     public double computeFareInDecimal(Request request) {
