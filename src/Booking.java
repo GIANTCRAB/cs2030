@@ -24,6 +24,6 @@ class Booking implements Comparable<Booking> {
 	}
 
 	public String toString() {
-		return String.format("$%.2f using %s (%s)", this.getRide().computeFare(this.getRequest()).doubleValue(), this.cab.toString(), this.getRide().toString());
+		return String.format("$%.2f using %s (%s)", this.getRide().computeFareInDecimal(this.getRequest()), this.cab.toString(), this.getRide().toString());
 	}
 }

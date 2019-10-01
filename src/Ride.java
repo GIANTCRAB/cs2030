@@ -21,6 +21,10 @@ abstract class Ride {
         return this.costSharedWithPassengers ? totalCost / request.getNoOfPassengers() / 100 * 100 : totalCost;
     }
 
+    public double computeFareInDecimal(Request request) {
+        return this.computeFare(request).doubleValue() / 100;
+    }
+
     public String getRideType() {
         return this.getClass().getSimpleName();
     }
