@@ -23,14 +23,14 @@ class Booking implements Comparable<Booking> {
 
     @Override
     public int compareTo(Booking otherBooking) {
-        // compare waiting time
-        final int waitingTime = this.getCab().getMinutesAway().compareTo(otherBooking.getCab().getMinutesAway());
-        if (waitingTime == 0) {
+        // compare prices
+        final int prices = this.getRide().computeFare(this.getRequest()).compareTo(otherBooking.getRide().computeFare(otherBooking.getRequest()));
+        if (prices == 0) {
             // Tie breaker
-            return this.getRide().computeFare(this.getRequest()).compareTo(otherBooking.getRide().computeFare(otherBooking.getRequest()));
+            return this.getCab().getMinutesAway().compareTo(otherBooking.getCab().getMinutesAway());
         }
 
-        return waitingTime;
+        return prices;
     }
 
     public String toString() {
