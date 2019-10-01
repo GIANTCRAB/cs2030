@@ -1,7 +1,7 @@
 class Booking implements Comparable<Booking> {
-	private Cab cab;
-	private Ride ride;
-	private Request request;
+	private final Cab cab;
+	private final Ride ride;
+	private final Request request;
 
 	Booking (Cab cab, Ride ride, Request request) {
 		this.cab = cab;
