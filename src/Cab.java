@@ -1,12 +1,10 @@
 abstract class Cab {
     private final String carPlateNumber;
     private final Integer minutesAway;
-    private final Class<? extends Ride>[] servicesProvided;
 
-    Cab(String carPlateNumber, int minutesAway, Class<? extends Ride>[] servicesProvided) {
+    Cab(String carPlateNumber, int minutesAway) {
         this.carPlateNumber = carPlateNumber;
         this.minutesAway = minutesAway;
-        this.servicesProvided = servicesProvided;
     }
 
     public String getCarPlateNumber() {
@@ -19,10 +17,6 @@ abstract class Cab {
 
     public String getCabType() {
         return this.getClass().getSimpleName();
-    }
-
-    public Class<? extends Ride>[] getServicesProvided() {
-        return this.servicesProvided;
     }
 
     public String toString() {
