@@ -23,7 +23,7 @@ abstract class Cab {
         return this.getClass().getSimpleName();
     }
 
-    public boolean canProvideService(Ride ride) {
+    public boolean canProvideService(Class<? extends Ride> ride) {
         return this.servicesProvided.contains(ride);
     }
 
