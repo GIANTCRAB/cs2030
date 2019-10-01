@@ -26,6 +26,6 @@ abstract class Cab {
     }
 
     public String toString() {
-        return String.format("%s (%d minutes away) %s", this.getCarPlateNumber(), this.getMinutesAway(), this.getCabType());
+        return String.format("%s (%d mins away) %s", this.getCarPlateNumber(), this.getMinutesAway(), this.getCabType());
     }
 }
