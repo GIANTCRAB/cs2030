@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.function.Function;
 
 public class Trace<T> {
     private final T currentValue;
@@ -38,5 +39,11 @@ public class Trace<T> {
 
     public boolean equals(Trace<T> trace) {
         return this.get().equals(trace.get()) && this.history().equals(trace.history());
+    }
+
+    public Trace<T> map(Function<? super T, ? extends T> mapper) {
+        final List<T> newTraceHistory = this.history();
+        newTraceHistory.add(this.get());
+        return new Trace<>(mapper.apply(this.get()), newTraceHistory);
     }
 }
