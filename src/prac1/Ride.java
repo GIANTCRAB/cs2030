@@ -1,3 +1,5 @@
+package prac1;
+
 abstract class Ride {
     protected int surchargeCost = 0;
     protected int distanceCost = 0;

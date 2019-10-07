@@ -1,3 +1,5 @@
+package prac1;
+
 class Request {
     private final int distance;
     private final int noOfPassengers;

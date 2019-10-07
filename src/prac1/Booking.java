@@ -1,3 +1,5 @@
+package prac1;
+
 class Booking implements Comparable<Booking> {
     private final Cab cab;
     private final Ride ride;

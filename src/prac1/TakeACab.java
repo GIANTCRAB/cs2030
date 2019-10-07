@@ -1,3 +1,5 @@
+package prac1;
+
 class TakeACab extends Ride {
     TakeACab() {
         super();

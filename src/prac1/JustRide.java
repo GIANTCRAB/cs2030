@@ -1,3 +1,5 @@
+package prac1;
+
 class JustRide extends Ride {
     JustRide() {
         super();

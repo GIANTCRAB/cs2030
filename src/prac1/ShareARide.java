@@ -1,3 +1,5 @@
+package prac1;
+
 class ShareARide extends Ride {
     ShareARide() {
         super();

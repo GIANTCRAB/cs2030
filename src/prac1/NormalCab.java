@@ -1,3 +1,5 @@
+package prac1;
+
 import java.util.Arrays;
 import java.util.Collection;
 

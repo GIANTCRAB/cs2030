@@ -1,3 +1,5 @@
+package prac1;
+
 public class AvailableCabs {
     public static Cab getCab(String cabType, String carPlateNumber, int minutesAway) {
         switch (cabType) {
