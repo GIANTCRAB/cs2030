@@ -24,13 +24,27 @@ public class Trace<T> {
         return this.currentValue;
     }
 
+    /**
+     * Returns the list of trace history + current value
+     *
+     * @return List<T> history
+     */
     public List<T> history() {
+        final List<T> wholeHistory = this.getTraceHistory();
+        wholeHistory.add(this.get());
+        return wholeHistory;
+    }
+
+    public List<T> getTraceHistory() {
         return this.traceHistory;
     }
 
     public Trace<T> back(int steps) {
-        final List<T> history = this.history();
-        final int newSize = history.size() - steps - 1;
+        final List<T> history = this.getTraceHistory();
+        if (steps > history.size()) {
+            steps = history.size();
+        }
+        final int newSize = history.size() - steps;
         final List<T> newHistory = history.subList(0, newSize);
         final T newCurrentValue = history.get(newSize);
 
@@ -38,12 +52,13 @@ public class Trace<T> {
     }
 
     public boolean equals(Trace<T> trace) {
-        return this.get().equals(trace.get()) && this.history().equals(trace.history());
+        return this.get().equals(trace.get()) && this.getTraceHistory().equals(trace.getTraceHistory());
     }
 
     public Trace<T> map(Function<? super T, ? extends T> mapper) {
-        final List<T> newTraceHistory = this.history();
+        final List<T> newTraceHistory = this.getTraceHistory();
         newTraceHistory.add(this.get());
-        return new Trace<>(mapper.apply(this.get()), newTraceHistory);
+        final T newCurrentValue = mapper.apply(this.get());
+        return new Trace<>(newCurrentValue, newTraceHistory);
     }
 }
