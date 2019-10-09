@@ -56,9 +56,18 @@ public class Trace<T> {
     }
 
     public Trace<T> map(Function<? super T, ? extends T> mapper) {
+        Objects.requireNonNull(mapper);
         final List<T> newTraceHistory = this.getTraceHistory();
         newTraceHistory.add(this.get());
         final T newCurrentValue = mapper.apply(this.get());
         return new Trace<>(newCurrentValue, newTraceHistory);
+    }
+
+    public Trace<T> flatMap(Function<? super T, Trace<T>> mapper) {
+        Objects.requireNonNull(mapper);
+        final List<T> newTraceHistory = this.getTraceHistory();
+        final Trace<T> newTrace = mapper.apply(this.get());
+        newTraceHistory.addAll(newTrace.getTraceHistory());
+        return new Trace<>(newTrace.get(), newTraceHistory);
     }
 }
