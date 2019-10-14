@@ -1,3 +1,5 @@
+package lab6;
+
 import java.util.*;
 import java.util.function.Function;
 
