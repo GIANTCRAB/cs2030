@@ -7,9 +7,7 @@ import java.util.function.Predicate;
  * A shop object maintains the list of servers and support queries
  * for server.
  *
- * @author weitsang
- * @author atharvjoshi
- * @version CS2030 AY19/20 Sem 1 Lab 7
+ * @author Woo Huiren
  */
 class Shop {
     /**
@@ -47,13 +45,13 @@ class Shop {
      */
     public Shop replace(Server newServer) {
         final List<Server> newServers = new ArrayList<>(this.servers.size());
-        for (Server server : this.servers) {
+        this.servers.forEach((server) -> {
             if (server.equals(newServer)) {
                 newServers.add(newServer);
             } else {
                 newServers.add(server);
             }
-        }
+        });
         return new Shop(newServers);
     }
 
