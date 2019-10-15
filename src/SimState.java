@@ -268,7 +268,7 @@ public class SimState {
      * @return A string representation of the simulation.
      */
     public String toString() {
-        return this.stats.toString();
+        return this.consolidatedOutput.toString() + this.stats.toString();
     }
 
     /**
