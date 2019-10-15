@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 
 /**
  * A shop object maintains the list of servers and support queries
@@ -22,9 +23,7 @@ class Shop {
      */
     Shop(int numOfServers) {
         this.servers = new ArrayList<>(numOfServers);
-        for (int i = 0; i < numOfServers; i++) {
-            this.servers.add(new Server(i + 1));
-        }
+        IntStream.of(1, numOfServers + 1).forEach(consumer -> this.servers.add(new Server(numOfServers)));
     }
 
     Shop(List<Server> servers) {
