@@ -90,7 +90,7 @@ public class SimState {
      * @param c    The customer who waits.
      * @return A new state of the simulation after the customer waits.
      */
-    private SimState noteWait(double time, Server s, Customer c) {
+    public SimState noteWait(double time, Server s, Customer c) {
         return this.addOutput(String.format("%.3f %s waits to be served by %s\n", time, c, s));
     }
 
@@ -248,13 +248,17 @@ public class SimState {
      * @return The final state of the simulation.
      */
     public SimState run() {
-        Stream.generate(this::nextEvent)
-                .filter(consumer -> consumer.first.isPresent())
-                .forEach((consumer) -> {
-                    System.out.println(consumer.first.get());
-                    consumer.first.get().simulate(consumer.second);
-                });
-        return this;
+        Pair<Optional<Event>, SimState> p = nextEvent();
+        p = Stream.iterate(
+                p,
+                optionalSimStatePair -> optionalSimStatePair.first.isPresent(),
+                optionalSimStatePair -> optionalSimStatePair.first.get()
+                        .simulate(optionalSimStatePair.second)
+                        .nextEvent()
+        )
+                .reduce((first, second) -> second)
+                .get();
+        return p.first.get().simulate(p.second).nextEvent().second;
     }
 
     /**
@@ -264,7 +268,7 @@ public class SimState {
      * @return A string representation of the simulation.
      */
     public String toString() {
-        return stats.toString();
+        return this.stats.toString();
     }
 
     /**
