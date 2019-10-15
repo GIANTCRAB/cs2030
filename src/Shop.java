@@ -59,13 +59,8 @@ class Shop {
      *
      * @return An idle server, or {@code null} if every server is busy.
      */
-    public Server findIdleServer() {
-        for (Server server : this.servers) {
-            if (server.isIdle()) {
-                return server;
-            }
-        }
-        return null;
+    public Optional<Server> findIdleServer() {
+        return this.find(Server::isIdle);
     }
 
     /**
@@ -74,13 +69,8 @@ class Shop {
      * @return A server with no waiting customer, or {@code null} is every
      * server already has a waiting customer.
      */
-    public Server findServerWithNoWaitingCustomer() {
-        for (Server server : this.servers) {
-            if (!server.hasWaitingCustomer()) {
-                return server;
-            }
-        }
-        return null;
+    public Optional<Server> findServerWithNoWaitingCustomer() {
+        return this.find(server -> !server.hasWaitingCustomer());
     }
 
     /**
