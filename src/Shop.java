@@ -23,7 +23,7 @@ class Shop {
      */
     Shop(int numOfServers) {
         this.servers = new ArrayList<>(numOfServers);
-        IntStream.of(1, numOfServers + 1).forEach(consumer -> this.servers.add(new Server(consumer)));
+        IntStream.range(1, numOfServers + 1).forEach(consumer -> this.servers.add(new Server(consumer)));
     }
 
     Shop(List<Server> servers) {
