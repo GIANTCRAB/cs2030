@@ -150,9 +150,7 @@ public class SimState {
      */
     public SimState simulateArrival(double time) {
         Customer customer = new Customer(time, this.lastCustomerId);
-        final SimState updatedSimState = this.incrementLastCustomerId();
-        return updatedSimState.addEvent(time, simState -> simState.noteArrival(time, customer))
-                .addEvent(time, simState -> simState.processArrival(time, customer));
+        return this.incrementLastCustomerId().noteArrival(time, customer).processArrival(time, customer);
     }
 
     private SimState incrementLastCustomerId() {
@@ -203,10 +201,10 @@ public class SimState {
      * @return A new state of the simulation.
      */
     public SimState simulateDone(double time, Server server, Customer customer) {
-        final SimState updatedSimState = this.addEvent(time, simState -> simState.noteDone(time, server, customer));
+        final SimState updatedSimState = this.noteDone(time, server, customer);
         Optional<Customer> c = server.getWaitingCustomer();
         if (c.isPresent()) {
-            return updatedSimState.addEvent(time, simState -> simState.serveCustomer(time, server, c.get()));
+            return updatedSimState.serveCustomer(time, server, c.get());
         }
         final Server updatedServer = server.makeIdle();
         final Shop updatedShop = updatedSimState.shop.replace(updatedServer);
