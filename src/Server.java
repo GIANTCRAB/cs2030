@@ -55,7 +55,7 @@ class Server {
      * @return true if a customer is waiting for given server; false otherwise.
      */
     public boolean hasWaitingCustomer() {
-        return this.waitingCustomer != null;
+        return this.getWaitingCustomer().isPresent();
     }
 
     /**
