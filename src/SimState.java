@@ -104,7 +104,9 @@ public class SimState {
      */
     public SimState noteServed(double time, Server s, Customer c) {
         final SimState updatedSimState = this.addOutput(String.format("%.3f %s served by %s\n", time, c, s));
-        final Statistics newStats = updatedSimState.stats.serveOneCustomer().recordWaitingTime(c.timeWaited(time));
+        final Statistics newStats = updatedSimState.stats
+                .serveOneCustomer()
+                .recordWaitingTime(c.timeWaited(time));
         return new SimState(updatedSimState.events,
                 newStats,
                 updatedSimState.shop,
@@ -150,7 +152,9 @@ public class SimState {
      */
     public SimState simulateArrival(double time) {
         Customer customer = new Customer(time, this.lastCustomerId);
-        return this.incrementLastCustomerId().noteArrival(time, customer).processArrival(time, customer);
+        return this.incrementLastCustomerId()
+                .noteArrival(time, customer)
+                .processArrival(time, customer);
     }
 
     private SimState incrementLastCustomerId() {
@@ -201,19 +205,23 @@ public class SimState {
      * @return A new state of the simulation.
      */
     public SimState simulateDone(double time, Server server, Customer customer) {
-        final SimState updatedSimState = this.noteDone(time, server, customer);
-        Optional<Customer> c = server.getWaitingCustomer();
-        if (c.isPresent()) {
-            return updatedSimState.serveCustomer(time, server, c.get());
-        }
-        final Server updatedServer = server.makeIdle();
-        final Shop updatedShop = updatedSimState.shop.replace(updatedServer);
+        final Optional<Server> actualServer = this.shop.find(s -> s.equals(server));
+        if (actualServer.isPresent()) {
+            final SimState updatedSimState = this.noteDone(time, actualServer.get(), customer);
+            if (actualServer.get().hasWaitingCustomer()) {
+                final Customer waitingCustomer = actualServer.get().getWaitingCustomer().get();
+                return updatedSimState.serveCustomer(time, actualServer.get(), waitingCustomer);
+            }
+            final Server updatedServer = actualServer.get().makeIdle();
+            final Shop updatedShop = updatedSimState.shop.replace(updatedServer);
 
-        return new SimState(updatedSimState.events,
-                updatedSimState.stats,
-                updatedShop,
-                updatedSimState.consolidatedOutput,
-                updatedSimState.lastCustomerId);
+            return new SimState(updatedSimState.events,
+                    updatedSimState.stats,
+                    updatedShop,
+                    updatedSimState.consolidatedOutput,
+                    updatedSimState.lastCustomerId);
+        }
+        return this;
     }
 
     /**
@@ -227,15 +235,20 @@ public class SimState {
      */
     private SimState serveCustomer(double time, Server server, Customer customer) {
         double doneTime = time + Simulation.SERVICE_TIME;
-        final Server updatedServer = server.serve(customer);
-        final Shop updatedShop = this.shop.replace(updatedServer);
-        return new SimState(this.events,
-                this.stats,
-                updatedShop,
-                this.consolidatedOutput,
-                this.lastCustomerId)
-                .noteServed(time, updatedServer, customer)
-                .addEvent(doneTime, simState -> simState.simulateDone(doneTime, updatedServer, customer));
+        final Optional<Server> actualServer = this.shop.find(s -> s.equals(server));
+        if (actualServer.isPresent()) {
+            final Server updatedServer = actualServer.get().serve(customer);
+            final Shop updatedShop = this.shop.replace(updatedServer);
+            return new SimState(this.events,
+                    this.stats,
+                    updatedShop,
+                    this.consolidatedOutput,
+                    this.lastCustomerId)
+                    .noteServed(time, updatedServer, customer)
+                    .addEvent(doneTime, simState -> simState.simulateDone(doneTime, updatedServer, customer));
+        }
+
+        return this;
     }
 
     /**
@@ -246,7 +259,7 @@ public class SimState {
      * @return The final state of the simulation.
      */
     public SimState run() {
-        Pair<Optional<Event>, SimState> p = nextEvent();
+        Pair<Optional<Event>, SimState> p = this.nextEvent();
         p = Stream.iterate(
                 p,
                 optionalSimStatePair -> optionalSimStatePair.first.isPresent(),
