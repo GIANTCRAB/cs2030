@@ -9,12 +9,12 @@ class Server {
     /**
      * The customer currently being served, if any.
      */
-    private final Customer currentCustomer;
+    private final Optional<Customer> currentCustomer;
 
     /**
      * The customer currently waiting, if any.
      */
-    private final Customer waitingCustomer;
+    private final Optional<Customer> waitingCustomer;
 
     /**
      * Creates a server and initalizes it with a id.
@@ -22,10 +22,10 @@ class Server {
      * @param id The ID of the server
      */
     public Server(int id) {
-        this(id, null, null);
+        this(id, Optional.empty(), Optional.empty());
     }
 
-    private Server(int id, Customer currentCustomer, Customer waitingCustomer) {
+    private Server(int id, Optional<Customer> currentCustomer, Optional<Customer> waitingCustomer) {
         this.id = id;
         this.currentCustomer = currentCustomer;
         this.waitingCustomer = waitingCustomer;
@@ -37,7 +37,7 @@ class Server {
      * @return A new server with the current customer removed.
      */
     public Server makeIdle() {
-        return new Server(this.id, null, this.waitingCustomer);
+        return new Server(this.id, Optional.empty(), this.waitingCustomer);
     }
 
     /**
@@ -46,7 +46,7 @@ class Server {
      * @return true if the server is idle (no current customer); false otherwise.
      */
     public boolean isIdle() {
-        return this.currentCustomer == null;
+        return this.currentCustomer.isEmpty();
     }
 
     /**
@@ -64,7 +64,7 @@ class Server {
      * @return customer waiting for given server.
      */
     public Optional<Customer> getWaitingCustomer() {
-        return Optional.ofNullable(this.waitingCustomer);
+        return this.waitingCustomer;
     }
 
     /**
@@ -74,10 +74,10 @@ class Server {
      * @return The new server serving this customer.
      */
     public Server serve(Customer customer) {
-        if (customer.equals(this.waitingCustomer)) {
-            return new Server(this.id, customer, null);
+        if (this.waitingCustomer.isPresent() && customer.equals(this.waitingCustomer.get())) {
+            return new Server(this.id, Optional.of(customer), Optional.empty());
         }
-        return new Server(this.id, customer, this.waitingCustomer);
+        return new Server(this.id, Optional.of(customer), this.getWaitingCustomer());
     }
 
     /**
@@ -87,7 +87,7 @@ class Server {
      * @return The new server with a waiting customer.
      */
     public Server askToWait(Customer customer) {
-        return new Server(this.id, this.currentCustomer, customer);
+        return new Server(this.id, this.currentCustomer, Optional.of(customer));
     }
 
     /**

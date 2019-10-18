@@ -64,7 +64,7 @@ class Main {
      * create a scanner that reads from standard input.
      *
      * @param args The arguments provided for simulation.
-     * @return A scanner or {@code null} if a filename is provided but the file
+     * @return A scanner or {@code} if a filename is provided but the file
      * cannot be open.
      */
     private static Optional<Scanner> createScanner(String[] args) {

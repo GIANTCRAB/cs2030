@@ -57,7 +57,7 @@ class Shop {
     /**
      * Return the first idle server in the list.
      *
-     * @return An idle server, or {@code null} if every server is busy.
+     * @return An idle server, or {@code} if every server is busy.
      */
     public Optional<Server> findIdleServer() {
         return this.find(Server::isIdle);
@@ -66,7 +66,7 @@ class Shop {
     /**
      * Return the first server with no waiting customer.
      *
-     * @return A server with no waiting customer, or {@code null} is every
+     * @return A server with no waiting customer, or {@code} is every
      * server already has a waiting customer.
      */
     public Optional<Server> findServerWithNoWaitingCustomer() {
