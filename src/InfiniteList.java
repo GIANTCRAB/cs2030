@@ -15,11 +15,12 @@ public interface InfiniteList<T> {
     }
 
     public static <T> InfiniteList<T> iterate(T seed, Function<? super T, ? extends T> next) {
-        return InfiniteListImpl.iterate(seed, next); 
+        return InfiniteListImpl.iterate(seed, next);
     }
 
-//    public <R> InfiniteList<R> map(Function<? super T, ? extends R> mapper);
-//    public InfiniteList<T> filter(Predicate<? super T> predicate);
+    public <R> InfiniteList<R> map(Function<? super T, ? extends R> mapper);
+
+    public InfiniteList<T> filter(Predicate<? super T> predicate);
 //    public void forEach(Consumer<? super T> action);
 //    public Object[] toArray();
 //    public InfiniteList<T> limit(long n);
