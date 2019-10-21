@@ -1,3 +1,5 @@
+package lab7;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +42,7 @@ class Shop {
 
     /**
      * @param newServer the new server to replace the old one
-     * @return the new Shop list
+     * @return the new lab7.Shop list
      */
     public Shop replace(Server newServer) {
         final List<Server> newServers = new ArrayList<>(this.servers.size());

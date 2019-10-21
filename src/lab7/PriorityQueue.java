@@ -1,3 +1,5 @@
+package lab7;
+
 import java.util.Optional;
 
 public class PriorityQueue<T> {
@@ -15,7 +17,7 @@ public class PriorityQueue<T> {
 
     /**
      * Add an object into the priority queue following the
-     * add() method of the JCF PriorityQueue.  Return the
+     * add() method of the JCF lab7.PriorityQueue.  Return the
      * priority queue after the object is added.
      *
      * @param object The item to add

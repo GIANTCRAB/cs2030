@@ -1,5 +1,7 @@
+package lab7;
+
 /**
- * The Simulation class encapsulates information pertaining to a
+ * The lab7.Simulation class encapsulates information pertaining to a
  * simulation.
  *
  * @author atharvjoshi

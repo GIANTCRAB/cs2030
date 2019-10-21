@@ -1,3 +1,5 @@
+package lab7;
+
 public final class Pair<T,U> {
   /** First item in the pair. */
   public T first;

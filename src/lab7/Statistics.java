@@ -1,3 +1,5 @@
+package lab7;
+
 class Statistics {
     /**
      * Sum of time spent waiting for all customers.
@@ -15,10 +17,10 @@ class Statistics {
     private final int totalNumOfLostCustomers;
 
     /**
-     * Construct an Statistics object with 0 waiting time, 0
+     * Construct an lab7.Statistics object with 0 waiting time, 0
      * served customer, and 0 lost customer.
      *
-     * @return A new Statistics object
+     * @return A new lab7.Statistics object
      */
     public Statistics() {
         this(0, 0, 0);
@@ -33,7 +35,7 @@ class Statistics {
     /**
      * Mark that a customer is served.
      *
-     * @return A new Statistics object with updated stats
+     * @return A new lab7.Statistics object with updated stats
      */
     public Statistics serveOneCustomer() {
         final int totalNumOfServedCustomers = this.totalNumOfServedCustomers + 1;
@@ -43,7 +45,7 @@ class Statistics {
     /**
      * Mark that a customer is lost.
      *
-     * @return A new Statistics object with updated stats
+     * @return A new lab7.Statistics object with updated stats
      */
     public Statistics looseOneCustomer() {
         final int totalNumOfLostCustomers = this.totalNumOfLostCustomers + 1;
@@ -54,7 +56,7 @@ class Statistics {
      * Accumulate the waiting time of a customer.
      *
      * @param time The time a customer waited.
-     * @return A new Statistics object with updated stats
+     * @return A new lab7.Statistics object with updated stats
      */
     public Statistics recordWaitingTime(double time) {
         final double totalWaitingTime = this.totalWaitingTime + time;

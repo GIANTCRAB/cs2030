@@ -1,3 +1,5 @@
+package lab7;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Optional;

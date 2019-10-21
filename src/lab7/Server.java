@@ -1,3 +1,5 @@
+package lab7;
+
 import java.util.Optional;
 
 class Server {

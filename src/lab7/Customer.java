@@ -1,3 +1,5 @@
+package lab7;
+
 class Customer {
     /**
      * The unique ID of this customer.
