@@ -4,10 +4,10 @@ import java.util.function.Supplier;
 
 public class InfiniteListImpl<T> implements InfiniteList<T> {
     private final Supplier<? extends T> head;
-    private final Supplier<InfiniteListImpl<? extends T>> tail;
+    private final Supplier<InfiniteListImpl<T>> tail;
 
 
-    private InfiniteListImpl(Supplier<? extends T> head, Supplier<InfiniteListImpl<? extends T>> tail) {
+    private InfiniteListImpl(Supplier<? extends T> head, Supplier<InfiniteListImpl<T>> tail) {
         this.head = head;
         this.tail = tail;
     }
@@ -23,4 +23,10 @@ public class InfiniteListImpl<T> implements InfiniteList<T> {
                 () -> InfiniteListImpl.iterate(next.apply(seed), next));
     }
 
+    public InfiniteListImpl<T> get() {
+        final InfiniteListImpl<T> infiniteListCopy = new InfiniteListImpl<>(this.head, this.tail);
+        final InfiniteListImpl<T> getResult = infiniteListCopy.tail.get();
+        System.out.println(this.head.get());
+        return new InfiniteListImpl<>(getResult.head, getResult.tail);
+    }
 }
