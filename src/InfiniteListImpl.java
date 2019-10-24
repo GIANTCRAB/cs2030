@@ -26,19 +26,19 @@ public class InfiniteListImpl<T> implements InfiniteList<T> {
     public InfiniteListImpl<T> get() {
         final InfiniteListImpl<T> infiniteListCopy = new InfiniteListImpl<>(this.head, this.tail);
         final InfiniteListImpl<T> getResult = infiniteListCopy.tail.get();
-        System.out.println(this.head.get());
+        System.out.println(this.head.get().get());
         return new InfiniteListImpl<>(getResult.head, getResult.tail);
     }
 
     public <R> InfiniteListImpl<R> map(Function<? super T, ? extends R> mapper) {
-        return new InfiniteListImpl<R>(
-                () -> mapper.apply(head.get()),
-                () -> tail.get().map(mapper));
+        return new InfiniteListImpl<>(
+                () -> Optional.of(mapper.apply(this.head.get().get())),
+                () -> this.tail.get().map(mapper));
     }
 
     public InfiniteListImpl<T> filter(Predicate<? super T> predicate) {
         return new InfiniteListImpl<>(
-                () -> head.get().filter(predicate),
-                () -> tail.get().filter(predicate));
+                () -> this.head.get().filter(predicate),
+                () -> this.tail.get().filter(predicate));
     }
 }
