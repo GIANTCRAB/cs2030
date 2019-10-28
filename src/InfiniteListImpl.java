@@ -8,7 +8,7 @@ public class InfiniteListImpl<T> implements InfiniteList<T> {
     private final Supplier<InfiniteListImpl<T>> tail;
 
 
-    private InfiniteListImpl(Supplier<Optional<? extends T>> head, Supplier<InfiniteListImpl<T>> tail) {
+    protected InfiniteListImpl(Supplier<Optional<? extends T>> head, Supplier<InfiniteListImpl<T>> tail) {
         this.head = head;
         this.tail = tail;
     }
