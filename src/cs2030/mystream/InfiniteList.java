@@ -1,4 +1,4 @@
-// package cs2030.mystream;
+package cs2030.mystream;// package cs2030.mystream;
 
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
