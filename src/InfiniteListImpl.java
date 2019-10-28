@@ -7,6 +7,10 @@ public class InfiniteListImpl<T> implements InfiniteList<T> {
     private final Supplier<Optional<? extends T>> head;
     private final Supplier<InfiniteListImpl<T>> tail;
 
+    private InfiniteListImpl() {
+        this.head = Optional::empty;
+        this.tail = EmptyList::new;
+    }
 
     protected InfiniteListImpl(Supplier<Optional<? extends T>> head, Supplier<InfiniteListImpl<T>> tail) {
         this.head = head;
@@ -48,7 +52,7 @@ public class InfiniteListImpl<T> implements InfiniteList<T> {
         return this instanceof EmptyList;
     }
 
-    public InfiniteListImpl<T> limit(int limit) {
+    public InfiniteListImpl<T> limit(long limit) {
         final InfiniteListImpl<T> infiniteListCopy = new InfiniteListImpl<>(this.head, this.tail);
 
         return new InfiniteListImpl<>(() -> {
@@ -72,11 +76,7 @@ public class InfiniteListImpl<T> implements InfiniteList<T> {
         });
     }
 
-    public class EmptyList<T> extends InfiniteListImpl<T> {
-        private EmptyList() {
-            super(Optional::empty, EmptyList::new);
-        }
-
+    private class EmptyList<T> extends InfiniteListImpl<T> {
         @Override
         public <R> InfiniteListImpl<R> map(Function<? super T, ? extends R> mapper) {
             return new EmptyList<>();
