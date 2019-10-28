@@ -30,11 +30,11 @@ public interface InfiniteList<T> {
 
     long count();
 
-    //Optional<T> reduce(BinaryOperator<T> accumulator);
+    Optional<T> reduce(BinaryOperator<T> accumulator);
 
-    //<U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator);
+    <U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator);
 
-    //InfiniteList<T> takeWhile(Predicate<? super T> predicate);
+    InfiniteList<T> takeWhile(Predicate<? super T> predicate);
 
     boolean isEmptyList();
 }
