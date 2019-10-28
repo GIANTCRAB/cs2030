@@ -1,11 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import java.util.function.*;
 
 public class InfiniteListImpl<T> implements InfiniteList<T> {
     private final Supplier<Optional<? extends T>> head;
@@ -81,29 +77,24 @@ public class InfiniteListImpl<T> implements InfiniteList<T> {
     }
 
     public void forEach(Consumer<? super T> action) {
-        Stream.iterate(
-                new InfiniteListImpl<>(this.head, this.tail),
-                infiniteList -> !infiniteList.isEmptyList(),
-                infiniteList -> {
-                    infiniteList.head.get().ifPresent(action);
-                    return infiniteList.tail.get();
-                }
-        ).reduce((first, second) -> second).get();
+        InfiniteListImpl<T> infiniteListCopy = new InfiniteListImpl<>(this.head, this.tail);
+
+        while (!infiniteListCopy.isEmptyList()) {
+            infiniteListCopy.head.get().ifPresent(action);
+            infiniteListCopy = infiniteListCopy.tail.get();
+        }
     }
 
     public Object[] toArray() {
+        InfiniteListImpl<T> infiniteListCopy = new InfiniteListImpl<>(this.head, this.tail);
         final List<T> infiniteListArray = new ArrayList<>();
 
-        Stream.iterate(
-                new InfiniteListImpl<>(this.head, this.tail),
-                infiniteList -> !infiniteList.isEmptyList(),
-                infiniteList -> {
-                    if (infiniteList.head.get().isPresent()) {
-                        infiniteListArray.add(infiniteList.head.get().get());
-                    }
-                    return infiniteList.tail.get();
-                }
-        ).reduce((first, second) -> second).get();
+        while (!infiniteListCopy.isEmptyList()) {
+            if (infiniteListCopy.head.get().isPresent()) {
+                infiniteListArray.add(infiniteListCopy.head.get().get());
+            }
+            infiniteListCopy = infiniteListCopy.tail.get();
+        }
 
         return infiniteListArray.toArray();
     }
