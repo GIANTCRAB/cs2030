@@ -1,4 +1,4 @@
-package cs2030.mystream;
+package lab8.cs2030.mystream;
 
 import java.util.ArrayList;
 import java.util.List;
