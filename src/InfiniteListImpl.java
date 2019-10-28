@@ -108,6 +108,10 @@ public class InfiniteListImpl<T> implements InfiniteList<T> {
         return infiniteListArray.toArray();
     }
 
+    public long count() {
+        return this.toArray().length;
+    }
+
     private class EmptyList<T> extends InfiniteListImpl<T> {
         @Override
         public <R> InfiniteListImpl<R> map(Function<? super T, ? extends R> mapper) {

@@ -27,10 +27,14 @@ public interface InfiniteList<T> {
     Object[] toArray();
 
     InfiniteList<T> limit(long n);
-//    public long count();
-//    public Optional<T> reduce (BinaryOperator<T> accumulator);
-//    public <U> U reduce (U identity, BiFunction<U, ? super T, U> accumulator);
-//    public InfiniteList<T> takeWhile(Predicate<? super T> predicate);
 
-//    boolean isEmptyList();
+    long count();
+
+    //Optional<T> reduce(BinaryOperator<T> accumulator);
+
+    //<U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator);
+
+    //InfiniteList<T> takeWhile(Predicate<? super T> predicate);
+
+    boolean isEmptyList();
 }
