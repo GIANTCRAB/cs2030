@@ -26,7 +26,9 @@ public class InfiniteListImpl<T> implements InfiniteList<T> {
     public InfiniteListImpl<T> get() {
         final InfiniteListImpl<T> infiniteListCopy = new InfiniteListImpl<>(this.head, this.tail);
         final InfiniteListImpl<T> getResult = infiniteListCopy.tail.get();
-        System.out.println(this.head.get().get());
+        if (this.head.get().isPresent()) {
+            System.out.println(this.head.get().get());
+        }
         return new InfiniteListImpl<>(getResult.head, getResult.tail);
     }
 
