@@ -1,7 +1,11 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class InfiniteListImpl<T> implements InfiniteList<T> {
     private final Supplier<Optional<? extends T>> head;
@@ -74,6 +78,34 @@ public class InfiniteListImpl<T> implements InfiniteList<T> {
                 return currentTail.limit(limit - (infiniteListCopy.head.get().isPresent() ? 1 : 0));
             }
         });
+    }
+
+    public void forEach(Consumer<? super T> action) {
+        Stream.iterate(
+                new InfiniteListImpl<>(this.head, this.tail),
+                infiniteList -> !infiniteList.isEmptyList(),
+                infiniteList -> {
+                    infiniteList.head.get().ifPresent(action);
+                    return infiniteList.tail.get();
+                }
+        ).reduce((first, second) -> second).get();
+    }
+
+    public Object[] toArray() {
+        final List<T> infiniteListArray = new ArrayList<>();
+
+        Stream.iterate(
+                new InfiniteListImpl<>(this.head, this.tail),
+                infiniteList -> !infiniteList.isEmptyList(),
+                infiniteList -> {
+                    if (infiniteList.head.get().isPresent()) {
+                        infiniteListArray.add(infiniteList.head.get().get());
+                    }
+                    return infiniteList.tail.get();
+                }
+        ).reduce((first, second) -> second).get();
+
+        return infiniteListArray.toArray();
     }
 
     private class EmptyList<T> extends InfiniteListImpl<T> {

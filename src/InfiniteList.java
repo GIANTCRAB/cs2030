@@ -22,8 +22,10 @@ public interface InfiniteList<T> {
 
     InfiniteList<T> filter(Predicate<? super T> predicate);
 
-    //    public void forEach(Consumer<? super T> action);
-//    public Object[] toArray();
+    void forEach(Consumer<? super T> action);
+
+    Object[] toArray();
+
     InfiniteList<T> limit(long n);
 //    public long count();
 //    public Optional<T> reduce (BinaryOperator<T> accumulator);
