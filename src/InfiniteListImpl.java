@@ -43,4 +43,48 @@ public class InfiniteListImpl<T> implements InfiniteList<T> {
                 () -> this.head.get().filter(predicate),
                 () -> this.tail.get().filter(predicate));
     }
+
+    public boolean isEmptyList() {
+        return this instanceof EmptyList;
+    }
+
+    public InfiniteListImpl<T> limit(int limit) {
+        final InfiniteListImpl<T> infiniteListCopy = new InfiniteListImpl<>(this.head, this.tail);
+
+        return new InfiniteListImpl<>(() -> {
+            if (limit <= 0) {
+                return Optional.empty();
+            }
+
+            return infiniteListCopy.head.get();
+        }, () -> {
+            if (limit <= 0 || (limit == 1 && infiniteListCopy.head.get().isPresent())) {
+                return new EmptyList<>();
+            }
+
+            final InfiniteListImpl<T> currentTail = infiniteListCopy.tail.get();
+
+            if (currentTail.isEmptyList()) {
+                return currentTail;
+            } else {
+                return currentTail.limit(limit - (infiniteListCopy.head.get().isPresent() ? 1 : 0));
+            }
+        });
+    }
+
+    public class EmptyList<T> extends InfiniteListImpl<T> {
+        private EmptyList() {
+            super(Optional::empty, EmptyList::new);
+        }
+
+        @Override
+        public <R> InfiniteListImpl<R> map(Function<? super T, ? extends R> mapper) {
+            return new EmptyList<>();
+        }
+
+        @Override
+        public EmptyList<T> filter(Predicate<? super T> predicate) {
+            return new EmptyList<>();
+        }
+    }
 }
