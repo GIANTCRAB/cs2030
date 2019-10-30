@@ -27,7 +27,7 @@ public class Parser {
     }
 
     public final Parser wordcount() {
-        return new Parser(String.valueOf(this.parsedString.trim().split("\\W").length));
+        return new Parser(String.valueOf(this.parsedString.split("\\s+").length));
     }
 
     public final Parser linecount() {
