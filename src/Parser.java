@@ -27,11 +27,29 @@ public class Parser {
     }
 
     public final Parser wordcount() {
-        return new Parser(String.valueOf(this.parsedString.split("\\s+").length));
+        return new Parser(String.valueOf(this.getWords().length));
     }
 
     public final Parser linecount() {
         return new Parser(String.valueOf(this.parsedString.chars().filter(x -> x == '\n').count() + 1));
+    }
+
+    public final Parser echo() {
+        final StringBuilder constructedString = new StringBuilder();
+        final String[] words = this.getWords();
+        for (int i = 0, stringsSize = words.length; i < stringsSize; i++) {
+            final String word = words[i];
+            constructedString.append(word);
+            if (i != stringsSize - 1) {
+                constructedString.append(" ");
+            }
+        }
+
+        return new Parser(constructedString.toString());
+    }
+
+    private String[] getWords() {
+        return this.parsedString.split("\\s+");
     }
 
     @Override
