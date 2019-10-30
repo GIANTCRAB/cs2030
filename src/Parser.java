@@ -2,10 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
-    private final List<String> lines;
+    private final String parsedString;
 
-    private Parser(List<String> lines) {
-        this.lines = lines;
+    private Parser(String parsedString) {
+        this.parsedString = parsedString;
     }
 
     public static Parser parse(List lines) {
@@ -13,21 +13,29 @@ public class Parser {
         for (Object line : lines) {
             newLines.add(String.valueOf(line));
         }
-        return new Parser(newLines);
-    }
 
-    @Override
-    public String toString() {
         final StringBuilder constructedString = new StringBuilder();
-        final List<String> strings = this.lines;
-        for (int i = 0, stringsSize = strings.size(); i < stringsSize; i++) {
-            String line = strings.get(i);
+        for (int i = 0, stringsSize = newLines.size(); i < stringsSize; i++) {
+            String line = newLines.get(i);
             constructedString.append(line);
             if (i != stringsSize - 1) {
                 constructedString.append("\n");
             }
         }
 
-        return constructedString.toString();
+        return new Parser(constructedString.toString());
+    }
+
+    public final Parser wordcount() {
+        return new Parser(String.valueOf(this.parsedString.trim().split("\\W").length));
+    }
+
+    public final Parser linecount() {
+        return new Parser(String.valueOf(this.parsedString.chars().filter(x -> x == '\n').count() + 1));
+    }
+
+    @Override
+    public String toString() {
+        return this.parsedString;
     }
 }
