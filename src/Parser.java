@@ -8,7 +8,7 @@ public class Parser {
         this.lines = lines;
     }
 
-    public final static Parser parse(List lines) {
+    public static Parser parse(List lines) {
         final List<String> newLines = new ArrayList<>();
         for (Object line : lines) {
             newLines.add(String.valueOf(line));
