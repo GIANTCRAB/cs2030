@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Parser {
@@ -27,10 +28,16 @@ public class Parser {
     }
 
     public final Parser wordcount() {
+        if (this.parsedString.isEmpty()) {
+            return new Parser("0");
+        }
         return new Parser(String.valueOf(this.getWords().length));
     }
 
     public final Parser linecount() {
+        if (this.parsedString.isEmpty()) {
+            return new Parser("0");
+        }
         return new Parser(String.valueOf(this.parsedString.chars().filter(x -> x == '\n').count() + 1));
     }
 
@@ -46,6 +53,18 @@ public class Parser {
         }
 
         return new Parser(constructedString.toString());
+    }
+
+    public final Parser grab(String word) {
+        final List<String> sentencesWithWord = new ArrayList<>();
+
+        Arrays.stream(this.parsedString.split("\n")).forEach(sentence -> {
+            if (sentence.contains(word)) {
+                sentencesWithWord.add(sentence);
+            }
+        });
+
+        return Parser.parse(sentencesWithWord);
     }
 
     private String[] getWords() {
