@@ -4,12 +4,22 @@ import java.util.List;
 
 public class Parser {
     private final String parsedString;
+    private final boolean grabEmpty;
 
     private Parser(String parsedString) {
+        this(parsedString, false);
+    }
+
+    private Parser(String parsedString, boolean grabEmpty) {
         this.parsedString = parsedString;
+        this.grabEmpty = grabEmpty;
     }
 
     public static Parser parse(List lines) {
+        return Parser.parse(lines, false);
+    }
+
+    public static Parser parse(List lines, boolean grabEmpty) {
         final List<String> newLines = new ArrayList<>();
         for (Object line : lines) {
             newLines.add(String.valueOf(line));
@@ -24,7 +34,7 @@ public class Parser {
             }
         }
 
-        return new Parser(constructedString.toString());
+        return new Parser(constructedString.toString(), grabEmpty);
     }
 
     public final Parser wordcount() {
@@ -35,7 +45,7 @@ public class Parser {
     }
 
     public final Parser linecount() {
-        if (this.parsedString.isEmpty()) {
+        if (this.grabEmpty) {
             return new Parser("0");
         }
         return new Parser(String.valueOf(this.parsedString.chars().filter(x -> x == '\n').count() + 1));
@@ -58,13 +68,34 @@ public class Parser {
     public final Parser grab(String word) {
         final List<String> sentencesWithWord = new ArrayList<>();
 
-        Arrays.stream(this.parsedString.split("\n")).forEach(sentence -> {
+        Arrays.stream(this.parsedString.split("\\r?\\n", -1)).forEach(sentence -> {
             if (sentence.contains(word)) {
                 sentencesWithWord.add(sentence);
             }
         });
 
+        if (sentencesWithWord.size() == 0) {
+            return new Parser("", true);
+        }
+
         return Parser.parse(sentencesWithWord);
+    }
+
+    public final Parser chop(int start, int end) {
+        final List<String> sentencesAfterChop = new ArrayList<>();
+
+        Arrays.stream(this.parsedString.split("\\r?\\n", -1)).forEach(sentence -> {
+            if (start <= sentence.length()) {
+                final int actualStart = start > 0 ? start - 1 : 0;
+                final int actualEnd = end <= sentence.length() ? end : sentence.length();
+                final String newSentence = sentence.substring(actualStart, actualEnd);
+                sentencesAfterChop.add(newSentence);
+            } else {
+                sentencesAfterChop.add("");
+            }
+        });
+
+        return Parser.parse(sentencesAfterChop);
     }
 
     private String[] getWords() {
