@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Parser {
     private final String parsedString;
@@ -68,7 +69,7 @@ public class Parser {
     public final Parser grab(String word) {
         final List<String> sentencesWithWord = new ArrayList<>();
 
-        Arrays.stream(this.parsedString.split("\\r?\\n", -1)).forEach(sentence -> {
+        Arrays.stream(this.getSentences()).forEach(sentence -> {
             if (sentence.contains(word)) {
                 sentencesWithWord.add(sentence);
             }
@@ -84,7 +85,7 @@ public class Parser {
     public final Parser chop(int start, int end) {
         final List<String> sentencesAfterChop = new ArrayList<>();
 
-        Arrays.stream(this.parsedString.split("\\r?\\n", -1)).forEach(sentence -> {
+        Arrays.stream(this.getSentences()).forEach(sentence -> {
             if (start <= sentence.length()) {
                 final int actualStart = start > 0 ? start - 1 : 0;
                 final int actualEnd = end <= sentence.length() ? end : sentence.length();
@@ -98,8 +99,46 @@ public class Parser {
         return Parser.parse(sentencesAfterChop);
     }
 
+    public final Parser shuffle() {
+        final List<String> sentencesAfterShuffle = new ArrayList<>();
+
+        Arrays.stream(this.getSentences()).forEach(sentence -> {
+            final Parser sentenceParser = new Parser(sentence);
+            final String[] wordsInSentence = sentenceParser.getWords();
+            final StringBuilder sentenceAfterShuffle = new StringBuilder();
+            for (int i = 0, stringsSize = wordsInSentence.length; i < stringsSize; i++) {
+                final String word = wordsInSentence[i];
+                if (word.length() > 3) {
+                    int[] letterIndexes = IntStream.range(0, word.length()).filter(c -> Character.isLetter(word.charAt(c))).toArray();
+                    final int secondIndex = letterIndexes[1];
+                    final int secondLastIndex = letterIndexes[letterIndexes.length - 2];
+
+                    final String newWord = word.substring(0, secondIndex) +
+                            word.substring(secondIndex + 1, secondLastIndex + 1) +
+                            word.charAt(secondIndex) +
+                            word.substring(secondLastIndex + 1);
+                    sentenceAfterShuffle.append(newWord);
+                } else {
+                    // don't manipulate
+                    sentenceAfterShuffle.append(word);
+                }
+
+                if (i != stringsSize - 1) {
+                    sentenceAfterShuffle.append(" ");
+                }
+            }
+            sentencesAfterShuffle.add(sentenceAfterShuffle.toString());
+        });
+
+        return Parser.parse(sentencesAfterShuffle);
+    }
+
     private String[] getWords() {
         return this.parsedString.split("\\s+");
+    }
+
+    private String[] getSentences() {
+        return this.parsedString.split("\\r?\\n", -1);
     }
 
     @Override
