@@ -71,6 +71,6 @@ class MatrixMultiplication extends RecursiveTask<Matrix> {
 
     @Override
     public Matrix compute() {
-        return Matrix.recursiveMultiply(m1, m2, 0, 0, 0, 0, dimension);
+        return Matrix.recursiveMultiply(this.m1, this.m2, this.m1Row, this.m1Col, this.m2Row, this.m2Col, this.dimension);
     }
 }
