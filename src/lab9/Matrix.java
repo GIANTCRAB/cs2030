@@ -20,7 +20,7 @@ class Matrix {
      */
     int dimension;
 
-    private static final int THRESHOLD = 2;
+    private static final int THRESHOLD = 8;
 
     /**
      * Checks if two matrices are equals.
@@ -152,10 +152,11 @@ class Matrix {
         // multiply then sum the multiplication result.
         int size = dimension / 2;
         Matrix result = new Matrix(dimension);
-        Matrix a11b11 = recursiveMultiply(m1, m2, m1Row, m1Col, m2Row,
-                m2Col, size);
-        Matrix a12b21 = recursiveMultiply(m1, m2, m1Row, m1Col + size,
-                m2Row + size, m2Col, size);
+        final MatrixMultiplication a11b11Thread = new MatrixMultiplication(m1, m2, m1Row, m1Col, m2Row, m2Col, size);
+        a11b11Thread.fork();
+        final MatrixMultiplication a12b21Thread = new MatrixMultiplication(m1, m2, m1Row, m1Col + size, m2Row + size, m2Col, size);
+        final Matrix a12b21 = a12b21Thread.compute();
+        final Matrix a11b11 = a11b11Thread.join();
         for (int i = 0; i < size; i++) {
             double[] m1m = a11b11.m[i];
             double[] m2m = a12b21.m[i];
@@ -165,10 +166,11 @@ class Matrix {
             }
         }
 
-        Matrix a11b12 = recursiveMultiply(m1, m2, m1Row, m1Col, m2Row,
-                m2Col + size, size);
-        Matrix a12b22 = recursiveMultiply(m1, m2, m1Row, m1Col + size,
-                m2Row + size, m2Col + size, size);
+        final MatrixMultiplication a11b12Thread = new MatrixMultiplication(m1, m2, m1Row, m1Col, m2Row, m2Col + size, size);
+        a11b12Thread.fork();
+        final MatrixMultiplication a12b12Thread = new MatrixMultiplication(m1, m2, m1Row, m1Col + size, m2Row + size, m2Col + size, size);
+        final Matrix a12b22 = a12b12Thread.compute();
+        final Matrix a11b12 = a11b12Thread.join();
         for (int i = 0; i < size; i++) {
             double[] m1m = a11b12.m[i];
             double[] m2m = a12b22.m[i];
@@ -178,10 +180,11 @@ class Matrix {
             }
         }
 
-        Matrix a21b11 = recursiveMultiply(m1, m2, m1Row + size, m1Col,
-                m2Row, m2Col, size);
-        Matrix a22b21 = recursiveMultiply(m1, m2, m1Row + size, m1Col + size,
-                m2Row + size, m2Col, size);
+        final MatrixMultiplication a21b11Thread = new MatrixMultiplication(m1, m2, m1Row + size, m1Col, m2Row, m2Col, size);
+        a21b11Thread.fork();
+        final MatrixMultiplication a21b21Thread = new MatrixMultiplication(m1, m2, m1Row + size, m1Col + size, m2Row + size, m2Col, size);
+        final Matrix a22b21 = a21b21Thread.compute();
+        final Matrix a21b11 = a21b11Thread.join();
         for (int i = 0; i < size; i++) {
             double[] m1m = a21b11.m[i];
             double[] m2m = a22b21.m[i];
@@ -191,10 +194,11 @@ class Matrix {
             }
         }
 
-        Matrix a21b12 = recursiveMultiply(m1, m2, m1Row + size, m1Col,
-                m2Row, m2Col + size, size);
-        Matrix a22b22 = recursiveMultiply(m1, m2, m1Row + size, m1Col + size,
-                m2Row + size, m2Col + size, size);
+        final MatrixMultiplication a21b12Thread = new MatrixMultiplication(m1, m2, m1Row + size, m1Col, m2Row, m2Col + size, size);
+        a21b12Thread.fork();
+        final MatrixMultiplication a22b22Thread = new MatrixMultiplication(m1, m2, m1Row + size, m1Col + size, m2Row + size, m2Col + size, size);
+        final Matrix a22b22 = a22b22Thread.compute();
+        final Matrix a21b12 = a21b12Thread.join();
         for (int i = 0; i < size; i++) {
             double[] m1m = a21b12.m[i];
             double[] m2m = a22b22.m[i];
