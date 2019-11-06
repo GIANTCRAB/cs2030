@@ -24,7 +24,11 @@ class Lazy<T> {
     }
 
     public T get() {
-        return this.evaluatedValue.orElseGet(() -> this.supplierValue.get());
+        return this.evaluatedValue.orElseGet(() -> {
+            T evaluatedValue = this.supplierValue.get();
+            this.evaluatedValue = Optional.of(evaluatedValue);
+            return evaluatedValue;
+        });
     }
 
     public <R> Lazy<R> map(Function<T, R> mapper) {
