@@ -26,13 +26,17 @@ class Lazy<T> {
     public T get() {
         return this.evaluatedValue.orElseGet(() -> {
             T evaluatedValue = this.supplierValue.get();
-            this.evaluatedValue = Optional.of(evaluatedValue);
+            try {
+                this.evaluatedValue = Optional.of(evaluatedValue);
+            } catch (NullPointerException e) {
+                return evaluatedValue;
+            }
             return evaluatedValue;
         });
     }
 
     public <R> Lazy<R> map(Function<T, R> mapper) {
-        return Lazy.of(() -> mapper.apply(this.get()));
+        return new Lazy<>(() -> mapper.apply(this.get()));
     }
 
     public <R> Lazy<R> flatMap(Function<T, Lazy<R>> mapper) {
@@ -41,7 +45,9 @@ class Lazy<T> {
 
     @Override
     public String toString() {
-        return "?";
+        StringBuilder returnValue = new StringBuilder();
+        this.evaluatedValue.ifPresentOrElse(returnValue::append, () -> returnValue.append("?"));
+        return returnValue.toString();
     }
 
     public boolean equals(Lazy<T> otherLazy) {
