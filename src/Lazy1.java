@@ -55,7 +55,13 @@ public class Lazy<T> {
     public String toString() {
         if (this.actions.isEmpty()) {
             StringBuilder returnValue = new StringBuilder();
-            this.evaluatedValue.ifPresentOrElse(returnValue::append, () -> {
+            this.evaluatedValue.ifPresentOrElse(consumer -> {
+                returnValue.append(consumer);
+                if (consumer instanceof String) {
+                    returnValue.insert(0, "\"");
+                    returnValue.append("\"");
+                }
+            }, () -> {
                 returnValue.append("?");
             });
             return returnValue.toString();
