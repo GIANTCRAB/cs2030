@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.function.Function;
 
-public class Lazy<T> {
+class Lazy<T> {
     private Optional<Supplier<? extends T>> supplierValue = Optional.empty();
     private Optional<? extends T> evaluatedValue = Optional.empty();
     private final List<Function<? super T, ? extends Lazy<? extends T>>> actions = new ArrayList<>();
