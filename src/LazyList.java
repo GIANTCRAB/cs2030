@@ -1,14 +1,13 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalInt;
 import java.util.function.UnaryOperator;
 import java.util.stream.IntStream;
 
-class LazyList<T extends Comparable<T>> {
-    private List<T> list = new ArrayList<>();
+public class LazyList<T extends Comparable<T>> {
+    private final List<T> list = new ArrayList<>();
     private Lazy<T> lazySeed;
-    private UnaryOperator<T> method;
-    private int maxLimit;
+    private final UnaryOperator<T> method;
+    private final int maxLimit;
 
     private LazyList(Lazy<T> lazySeed, UnaryOperator<T> method, int maxLimit) {
         this.lazySeed = lazySeed;
@@ -35,14 +34,15 @@ class LazyList<T extends Comparable<T>> {
     public int indexOf(T v) {
         final int indexOfQuery = this.list.indexOf(v);
         if (indexOfQuery == -1) {
-            final OptionalInt searchResult = IntStream.range(this.list.size(), maxLimit)
+            return IntStream.range(this.list.size(), maxLimit)
                     .filter(userIndex -> {
                         this.lazySeed = this.lazySeed.map(this.method);
                         T lazySeedResult = this.lazySeed.get();
                         this.list.add(lazySeedResult);
                         return lazySeedResult.equals(v);
-                    }).findFirst();
-            return searchResult.orElse(-1);
+                    })
+                    .findFirst()
+                    .orElse(-1);
         }
 
         return indexOfQuery;
