@@ -1,10 +1,12 @@
+package prac2;
+
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-class Lazy<T extends Comparable<T>> {
+class Lazy<T> {
     private transient Supplier<T> supplierValue;
     private volatile Optional<T> evaluatedValue = Optional.empty();
 
@@ -17,11 +19,11 @@ class Lazy<T extends Comparable<T>> {
         this.supplierValue = s;
     }
 
-    static <T extends Comparable<T>> Lazy<T> of(T v) {
+    static <T> Lazy<T> of(T v) {
         return new Lazy<>(v);
     }
 
-    static <T extends Comparable<T>> Lazy<T> of(Supplier<T> s) {
+    static <T> Lazy<T> of(Supplier<T> s) {
         return new Lazy<>(s);
     }
 
@@ -37,25 +39,21 @@ class Lazy<T extends Comparable<T>> {
         });
     }
 
-    public <R extends Comparable<R>> Lazy<R> map(Function<T, R> mapper) {
-        return new Lazy<R>(() -> mapper.apply(this.get()));
+    public <R> Lazy<R> map(Function<T, R> mapper) {
+        return new Lazy<>(() -> mapper.apply(this.get()));
     }
 
-    public <R extends Comparable<R>> Lazy<R> flatMap(Function<T, Lazy<R>> mapper) {
-        return new Lazy<R>(() -> mapper.apply(this.get()).get());
+    public <R> Lazy<R> flatMap(Function<T, Lazy<R>> mapper) {
+        return new Lazy<>(() -> mapper.apply(this.get()).get());
     }
 
-    public <U extends Comparable<U>, B extends Comparable<B>> Lazy<B> combine(Lazy<U> identity,
-                                                                              BiFunction<T, U, B> accumulator) {
-        return new Lazy<B>(() -> accumulator.apply(this.get(), identity.get()));
+    public <U, B> Lazy<B> combine(Lazy<U> identity,
+                                  BiFunction<T, U, B> accumulator) {
+        return new Lazy<>(() -> accumulator.apply(this.get(), identity.get()));
     }
 
     public Lazy<Boolean> test(Predicate<T> predicate) {
-        return new Lazy<Boolean>(() -> predicate.test(this.get()));
-    }
-
-    public Lazy<Integer> compareTo(Lazy<T> otherLazy) {
-        return new Lazy<Integer>(() -> this.get().compareTo(otherLazy.get()));
+        return new Lazy<>(() -> predicate.test(this.get()));
     }
 
     @Override

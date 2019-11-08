@@ -1,4 +1,7 @@
+package prac2;
+
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -41,6 +44,11 @@ class Lazy<T> {
 
     public <R> Lazy<R> flatMap(Function<T, Lazy<R>> mapper) {
         return new Lazy<>(() -> mapper.apply(this.get()).get());
+    }
+
+    public <U, B> Lazy<B> combine(Lazy<U> identity,
+                                  BiFunction<T, U, B> accumulator) {
+        return new Lazy<>(() -> accumulator.apply(this.get(), identity.get()));
     }
 
     @Override

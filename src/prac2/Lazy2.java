@@ -1,7 +1,7 @@
+package prac2;
+
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 class Lazy<T> {
@@ -45,15 +45,6 @@ class Lazy<T> {
         return new Lazy<>(() -> mapper.apply(this.get()).get());
     }
 
-    public <U, B> Lazy<B> combine(Lazy<U> identity,
-                                  BiFunction<T, U, B> accumulator) {
-        return new Lazy<>(() -> accumulator.apply(this.get(), identity.get()));
-    }
-
-    public Lazy<Boolean> test(Predicate<T> predicate) {
-        return new Lazy<>(() -> predicate.test(this.get()));
-    }
-
     @Override
     public String toString() {
         StringBuilder returnValue = new StringBuilder();
@@ -62,11 +53,7 @@ class Lazy<T> {
     }
 
     public boolean equals(Lazy<T> otherLazy) {
-        return this.get().equals(otherLazy.get());
-    }
-
-    @Override
-    public boolean equals(Object otherObject) {
-        return false;
+        return this.evaluatedValue.equals(otherLazy.evaluatedValue)
+                && this.supplierValue.equals(otherLazy.supplierValue);
     }
 }
