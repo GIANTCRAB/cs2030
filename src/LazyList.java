@@ -1,27 +1,50 @@
+import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
 
-class LazyList<T> {
-    List<T> list;
-    private LazyList(List<T> list) {
-        this.list = list;
+class LazyList<T extends Comparable<T>> {
+    private List<T> list = new ArrayList<>();
+    private Lazy<T> lazySeed;
+    private UnaryOperator<T> method;
+    private int maxLimit;
+
+    private LazyList(Lazy<T> lazySeed, UnaryOperator<T> method, int maxLimit) {
+        this.lazySeed = lazySeed;
+        this.method = method;
+        this.maxLimit = maxLimit;
+        this.list.add(lazySeed.get());
     }
 
-    static <T> LazyList<T> generate(int n, T seed, UnaryOperator<T> f) {
-        return new LazyList<T>(
-                Stream.iterate(seed, x -> f.apply(x))
-                        .limit(n)
-                        .collect(Collectors.toList())
-        );
+    static <T extends Comparable<T>> LazyList<T> generate(int n, T seed, UnaryOperator<T> f) {
+        return new LazyList<>(Lazy.of(seed), f, n);
     }
 
     public T get(int i) {
+        if (this.list.size() < i + 1) {
+            final int loopCount = i + 1 - this.list.size();
+            IntStream.range(0, loopCount).forEach(consumer -> {
+                this.lazySeed = this.lazySeed.map(this.method);
+                this.list.add(this.lazySeed.get());
+            });
+        }
         return this.list.get(i);
     }
 
     public int indexOf(T v) {
-        return this.list.indexOf(v);
+        final int indexOfQuery = this.list.indexOf(v);
+        if (indexOfQuery == -1) {
+            final OptionalInt searchResult = IntStream.range(this.list.size(), maxLimit)
+                    .filter(userIndex -> {
+                        this.lazySeed = this.lazySeed.map(this.method);
+                        T lazySeedResult = this.lazySeed.get();
+                        this.list.add(lazySeedResult);
+                        return lazySeedResult.equals(v);
+                    }).findFirst();
+            return searchResult.orElse(-1);
+        }
+
+        return indexOfQuery;
     }
 }
