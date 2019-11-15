@@ -13,16 +13,16 @@ public class RandomGenerator {
     private final double customerServiceRate;
     private final double serverRestingRate;
 
-    RandomGenerator(int var1, double var2, double var4, double var6) {
-        this.rngArrival = new Random((long) var1);
-        this.rngService = new Random((long) (var1 + 1));
-        this.rngRest = new Random((long) (var1 + 2));
-        this.rngRestPeriod = new Random((long) (var1 + 3));
-        this.rngCustomerType = new Random((long) (var1 + 4));
-        this.rngTimeoutPeriod = new Random((long) (var1 + 5));
-        this.customerArrivalRate = var2;
-        this.customerServiceRate = var4;
-        this.serverRestingRate = var6;
+    RandomGenerator(int rngArrival, double customerArrivalRate, double customerServiceRate, double serverRestingRate) {
+        this.rngArrival = new Random((long) rngArrival);
+        this.rngService = new Random((long) (rngArrival + 1));
+        this.rngRest = new Random((long) (rngArrival + 2));
+        this.rngRestPeriod = new Random((long) (rngArrival + 3));
+        this.rngCustomerType = new Random((long) (rngArrival + 4));
+        this.rngTimeoutPeriod = new Random((long) (rngArrival + 5));
+        this.customerArrivalRate = customerArrivalRate;
+        this.customerServiceRate = customerServiceRate;
+        this.serverRestingRate = serverRestingRate;
     }
 
     double genInterArrivalTime() {
