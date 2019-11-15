@@ -10,7 +10,7 @@ import java.util.Optional;
  * @author atharvjoshi
  * @version CS2030 AY19/20 Sem 1 Lab 7
  */
-class Server {
+class Server implements Checkout {
   /** The unique ID of this server. */
   private final int id;
 
