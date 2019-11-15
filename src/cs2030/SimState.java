@@ -1,4 +1,4 @@
-package cs2030.simulator;
+package cs2030;
 
 import java.util.Optional;
 import java.util.stream.Stream;

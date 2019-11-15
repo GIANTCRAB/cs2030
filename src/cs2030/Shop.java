@@ -1,4 +1,4 @@
-package cs2030.simulator;
+package cs2030;
 
 import java.util.List;
 import java.util.function.Predicate;

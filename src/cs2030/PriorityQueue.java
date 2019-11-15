@@ -1,9 +1,9 @@
-package cs2030.simulator;
+package cs2030;
 
 import java.util.Optional;
 
 /**
- * This class wraps around the class cs2030.simulator.PriorityQueue from Java
+ * This class wraps around the class cs2030.PriorityQueue from Java
  * Collection Framework.  It provides an alternative API 
  * that could be modified to support an immutable Priority
  * Queue.
@@ -32,7 +32,7 @@ public class PriorityQueue<T> {
 
   /**
    * Add an object into the priority queue following the
-   * add() method of the JCF cs2030.simulator.PriorityQueue.  Return the
+   * add() method of the JCF cs2030.PriorityQueue.  Return the
    * priority queue after the object is added.
    * @param object The item to add
    **/

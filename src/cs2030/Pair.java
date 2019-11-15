@@ -1,4 +1,4 @@
-package cs2030.simulator;
+package cs2030;
 
 /**
  * This utility class stores two items together in a pair.

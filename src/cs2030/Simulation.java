@@ -1,8 +1,8 @@
-package cs2030.simulator;
+package cs2030;
 
 /**
- * The cs2030.simulator.Simulation class encapsulates information pertaining to our
- * cs2030.simulator.Simulation.
+ * The cs2030.Simulation class encapsulates information pertaining to our
+ * cs2030.Simulation.
  *
  * @author atharvjoshi
  * @author weitsang

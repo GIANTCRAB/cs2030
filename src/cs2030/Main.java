@@ -1,4 +1,4 @@
-package cs2030.simulator;
+package cs2030;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

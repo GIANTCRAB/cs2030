@@ -1,8 +1,8 @@
-package cs2030.simulator;
+package cs2030;
 
 /**
- * The cs2030.simulator.Customer class encapsulates information and methods pertaining to a
- * cs2030.simulator.Customer in a simulation.  In Lab 4, we simplfied the class to maintaining
+ * The cs2030.Customer class encapsulates information and methods pertaining to a
+ * cs2030.Customer in a simulation.  In Lab 4, we simplfied the class to maintaining
  * only two variables -- id and timeArrived.
  *
  * @author weitsang

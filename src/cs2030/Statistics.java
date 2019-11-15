@@ -1,4 +1,4 @@
-package cs2030.simulator;
+package cs2030;
 
 /**
  * This is an immutable class that stores stats about the simulation.
@@ -25,7 +25,7 @@ class Statistics {
   }
 
   /**
-   * Constructor for a new cs2030.simulator.Statistics object.
+   * Constructor for a new cs2030.Statistics object.
    * @param waitTime the total waiting time so far.
    * @param servedCustomers the number of customers served so far.
    * @param lostCustomers the number of customers left.
@@ -38,7 +38,7 @@ class Statistics {
 
   /**
    * Mark that a customer is served.
-   * @return A new cs2030.simulator.Statistics object with updated stats
+   * @return A new cs2030.Statistics object with updated stats
    */
   public Statistics serveOneCustomer() {
     return new Statistics(
@@ -50,7 +50,7 @@ class Statistics {
 
   /**
    * Mark that a customer is lost.
-   * @return A new cs2030.simulator.Statistics object with updated stats
+   * @return A new cs2030.Statistics object with updated stats
    */
   public Statistics looseOneCustomer() {
     return new Statistics(
@@ -63,7 +63,7 @@ class Statistics {
   /**
    * Accumulate the waiting time of a customer.
    * @param time The time a customer waited.
-   * @return A new cs2030.simulator.Statistics object with updated stats
+   * @return A new cs2030.Statistics object with updated stats
    */
   public Statistics recordWaitingTime(double time) {
     return new Statistics(
