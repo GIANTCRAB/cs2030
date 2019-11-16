@@ -3,13 +3,17 @@ package cs2030;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-abstract class ShopCheckoutQueue {
+abstract class CheckoutQueue {
     private final Queue<Customer> customerQueue;
     private final int maxQueueCapacity;
 
-    ShopCheckoutQueue(int maxQueueCapacity) {
+    CheckoutQueue(int maxQueueCapacity) {
         this.customerQueue = new ArrayDeque<>();
         this.maxQueueCapacity = maxQueueCapacity;
+    }
+
+    public int getCurrentQueueLength() {
+        return this.customerQueue.size();
     }
 
     public int getMaxQueueCapacity() {
@@ -20,8 +24,8 @@ abstract class ShopCheckoutQueue {
         return this.customerQueue.size() < this.getMaxQueueCapacity();
     }
 
-    public ShopCheckoutQueue joinCustomerQueue(Customer customer) {
-        final Queue<Customer> customerQueue = this.getCustomerQueue();
+    public CheckoutQueue joinCustomerQueue(Customer customer) {
+        final Queue<Customer> customerQueue = this.customerQueue;
 
         if (this.canJoinCustomerQueue()) {
             customerQueue.add(customer);
@@ -31,10 +35,6 @@ abstract class ShopCheckoutQueue {
     }
 
     public Customer pollCustomer() {
-        return this.getCustomerQueue().poll();
-    }
-
-    private Queue<Customer> getCustomerQueue() {
-        return this.customerQueue;
+        return this.customerQueue.poll();
     }
 }
