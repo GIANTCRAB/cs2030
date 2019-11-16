@@ -9,5 +9,7 @@ public interface CheckoutCounter {
 
     boolean isIdle();
 
+    boolean canAcceptCustomer();
+
     void finishServingCustomer();
 }

@@ -39,6 +39,11 @@ public class ServerCounter implements HasOneCheckoutHandler {
     }
 
     @Override
+    public boolean canAcceptCustomer() {
+        return this.getCheckoutQueue().canJoinCustomerQueue();
+    }
+
+    @Override
     public void finishServingCustomer() {
         this.currentlyServing = Optional.empty();
     }
