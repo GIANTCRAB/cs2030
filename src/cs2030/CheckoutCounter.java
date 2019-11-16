@@ -1,7 +1,7 @@
 package cs2030;
 
 public interface CheckoutCounter {
-    CheckoutQueue getCheckoutQueue();
+    void addCustomerToCounter(Customer customer);
 
     void startServingCustomer();
 

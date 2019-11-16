@@ -4,27 +4,29 @@ import java.util.Optional;
 
 public class ServerCounter implements HasOneCheckoutHandler {
     private final CheckoutQueue checkoutQueue;
-    private final CheckoutHandler checkoutHandler;
+    private final Server server;
     private Optional<Customer> currentlyServing;
 
-    ServerCounter(ServerCheckoutQueue serverCheckoutQueue, CheckoutHandler checkoutHandler) {
+    ServerCounter(ServerCheckoutQueue serverCheckoutQueue, Server server) {
         this.checkoutQueue = serverCheckoutQueue;
-        this.checkoutHandler = checkoutHandler;
-    }
-
-    @Override
-    public CheckoutQueue getCheckoutQueue() {
-        return this.checkoutQueue;
+        this.server = server;
     }
 
     @Override
     public CheckoutHandler getCheckoutHandler() {
-        return this.checkoutHandler;
+        return this.server;
+    }
+
+    @Override
+    public void addCustomerToCounter(Customer customer) {
+        if (this.canAcceptCustomer()) {
+            this.checkoutQueue.joinCustomerQueue(customer);
+        }
     }
 
     @Override
     public void startServingCustomer() {
-        final Customer customer = this.getCheckoutQueue().pollCustomer();
+        final Customer customer = this.checkoutQueue.pollCustomer();
         this.currentlyServing = Optional.of(customer);
     }
 
@@ -35,12 +37,12 @@ public class ServerCounter implements HasOneCheckoutHandler {
 
     @Override
     public boolean isIdle() {
-        return !this.isServingCustomer() && this.getCheckoutQueue().getCurrentQueueLength() == 0;
+        return !this.isServingCustomer() && this.checkoutQueue.getCurrentQueueLength() == 0;
     }
 
     @Override
     public boolean canAcceptCustomer() {
-        return this.getCheckoutQueue().canJoinCustomerQueue();
+        return this.checkoutQueue.canJoinCustomerQueue();
     }
 
     @Override
