@@ -21,9 +21,6 @@ class Shop {
      * List of servers.
      */
     private final List<CheckoutCounter> checkoutCounters;
-    private final RandomGenerator randomGenerator;
-    private final Logger logger;
-    private final Statistics statistics;
 
     /**
      * Create a new shop with a given number of servers.
@@ -31,9 +28,6 @@ class Shop {
      * @param numOfServers The number of servers.
      */
     Shop(int numOfServers, int numOfSelfCheckout, RandomGenerator randomGenerator, Logger logger, Statistics statistics) {
-        this.randomGenerator = randomGenerator;
-        this.logger = logger;
-        this.statistics = statistics;
         final int MAX_WAITING_CUSTOMERS = 1;
 
         this.checkoutCounters = new ArrayList<>();
@@ -41,9 +35,9 @@ class Shop {
                 .map(num -> new ServerCounter(
                                 new ServerCheckoutQueue(MAX_WAITING_CUSTOMERS),
                                 new Server(num),
-                                this.randomGenerator,
-                                this.logger,
-                                this.statistics
+                                randomGenerator,
+                                logger,
+                                statistics
                         )
                 )
                 .limit(numOfServers)
