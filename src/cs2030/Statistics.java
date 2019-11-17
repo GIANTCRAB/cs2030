@@ -9,79 +9,68 @@ package cs2030;
  * @version CS2030 AY19/20 Sem 1 Lab 7
  */
 class Statistics {
-  /** Sum of time spent waiting for all customers. */
-  private final double totalWaitingTime;
+    /**
+     * Sum of time spent waiting for all customers.
+     */
+    private double totalWaitingTime;
 
-  /** Total number of customers who were served. */
-  private final int totalNumOfServedCustomer;
+    /**
+     * Total number of customers who were served.
+     */
+    private int totalNumOfServedCustomer;
 
-  /** Total number of customers who left without being served. */
-  private final int totalNumOfLostCustomer;
+    /**
+     * Total number of customers who left without being served.
+     */
+    private int totalNumOfLostCustomer;
 
-  public Statistics() {
-    this.totalWaitingTime = 0;
-    this.totalNumOfServedCustomer = 0;
-    this.totalNumOfLostCustomer = 0;
-  }
+    public Statistics() {
+        this.totalWaitingTime = 0;
+        this.totalNumOfServedCustomer = 0;
+        this.totalNumOfLostCustomer = 0;
+    }
 
-  /**
-   * Constructor for a new cs2030.Statistics object.
-   * @param waitTime the total waiting time so far.
-   * @param servedCustomers the number of customers served so far.
-   * @param lostCustomers the number of customers left.
-   */
-  private Statistics(double waitTime, int servedCustomers, int lostCustomers) {
-    this.totalWaitingTime = waitTime;
-    this.totalNumOfServedCustomer = servedCustomers;
-    this.totalNumOfLostCustomer = lostCustomers;
-  }
+    /**
+     * Mark that a customer is served.
+     *
+     * @return A new cs2030.Statistics object with updated stats
+     */
+    public Statistics serveOneCustomer() {
+        this.totalNumOfServedCustomer++;
+        return this;
+    }
 
-  /**
-   * Mark that a customer is served.
-   * @return A new cs2030.Statistics object with updated stats
-   */
-  public Statistics serveOneCustomer() {
-    return new Statistics(
-        this.totalWaitingTime,
-        this.totalNumOfServedCustomer + 1,
-        this.totalNumOfLostCustomer
-        );
-  }
+    /**
+     * Mark that a customer is lost.
+     *
+     * @return A new cs2030.Statistics object with updated stats
+     */
+    public Statistics looseOneCustomer() {
+        this.totalNumOfLostCustomer++;
+        return this;
+    }
 
-  /**
-   * Mark that a customer is lost.
-   * @return A new cs2030.Statistics object with updated stats
-   */
-  public Statistics looseOneCustomer() {
-    return new Statistics(
-        this.totalWaitingTime,
-        this.totalNumOfServedCustomer,
-        this.totalNumOfLostCustomer + 1
-        );
-  }
+    /**
+     * Accumulate the waiting time of a customer.
+     *
+     * @param time The time a customer waited.
+     * @return A new cs2030.Statistics object with updated stats
+     */
+    public Statistics recordWaitingTime(double time) {
+        this.totalWaitingTime += time;
+        return this;
+    }
 
-  /**
-   * Accumulate the waiting time of a customer.
-   * @param time The time a customer waited.
-   * @return A new cs2030.Statistics object with updated stats
-   */
-  public Statistics recordWaitingTime(double time) {
-    return new Statistics(
-        this.totalWaitingTime + time,
-        this.totalNumOfServedCustomer,
-        this.totalNumOfLostCustomer
-        );
-  }
-
-  /**
-   * Return a string representation of the staistics collected.
-   * @return A string containing three numbers: the average
-   *     waiting time, followed by the number of served customer,
-   *     followed by the number of lost customer.
-   */
-  public String toString() {
-    return String.format("[%.3f %d %d]",
-        totalWaitingTime / totalNumOfServedCustomer,
-        totalNumOfServedCustomer, totalNumOfLostCustomer);
-  }
+    /**
+     * Return a string representation of the staistics collected.
+     *
+     * @return A string containing three numbers: the average
+     * waiting time, followed by the number of served customer,
+     * followed by the number of lost customer.
+     */
+    public String toString() {
+        return String.format("[%.3f %d %d]",
+                totalWaitingTime / totalNumOfServedCustomer,
+                totalNumOfServedCustomer, totalNumOfLostCustomer);
+    }
 }
