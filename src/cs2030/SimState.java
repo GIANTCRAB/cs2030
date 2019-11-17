@@ -3,6 +3,7 @@ package cs2030;
 import cs2030.simulator.RandomGenerator;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * This class encapsulates all the simulation states.  There are four main
@@ -14,6 +15,11 @@ import java.util.Optional;
  * @version CS2030 AY19/20 Sem 1 Lab 7
  */
 public class SimState {
+    /**
+     * The number of customers to generate
+     */
+    private final int numOfCustomers;
+
     /**
      * The priority queue of events.
      */
@@ -47,16 +53,19 @@ public class SimState {
     /**
      * Constructor for creating the simulation state from scratch.
      *
-     * @param numOfServers The number of servers.
+     * @param numOfServers      The number of servers.
+     * @param numOfCustomers    The number of customers.
      * @param numOfSelfCheckout The number of self checkout machines.
-     * @param randomGenerator RNG generator seeded by Main
+     * @param maxQueueLength    The maximum queue length of checkout queues
+     * @param randomGenerator   RNG generator seeded by Main
      */
-    public SimState(int numOfServers, int numOfSelfCheckout, RandomGenerator randomGenerator) {
+    public SimState(int numOfCustomers, int numOfServers, int numOfSelfCheckout, int maxQueueLength, RandomGenerator randomGenerator) {
+        this.numOfCustomers = numOfCustomers;
         this.stats = new Statistics();
         this.eventStreamProvider = new EventStreamProvider();
         this.log = new EventLogger();
         this.randomGenerator = randomGenerator;
-        this.shop = new Shop(numOfServers, numOfSelfCheckout, this.randomGenerator, this.log, this.stats);
+        this.shop = new Shop(numOfServers, numOfSelfCheckout, maxQueueLength, this.randomGenerator, this.log, this.stats);
         this.lastCustomerId = 1;
     }
 
@@ -79,7 +88,11 @@ public class SimState {
      * @return A new state of the simulation after the customer arrives.
      */
     public SimState noteArrival(double time, Customer c) {
-        this.log.log(String.format("%.3f %s arrives\n", time, c));
+        this.eventStreamProvider.addEvent(
+                new EventImpl(time, () -> {
+                    this.log.log(String.format("%.3f %s arrives\n", time, c));
+                    return Optional.empty();
+                }));
 
         return this;
     }
@@ -105,13 +118,12 @@ public class SimState {
      *
      * @param time The time the customer arrives.
      */
-    public void simulateArrival(double time) {
+    public Optional<Event[]> simulateArrival(double time) {
         // TODO: implement greedy customer arrival
         Customer customer = new NormalCustomer(time, this.lastCustomerId);
-        this.noteArrival(time, customer)
+        return this.noteArrival(time, customer)
                 .incrementId()
-                .processArrival(time, customer)
-                .ifPresent(eventStreamProvider::addEvents);
+                .processArrival(time, customer);
     }
 
     /**
@@ -125,16 +137,33 @@ public class SimState {
      */
     private Optional<Event[]> processArrival(double time, Customer customer) {
         // Find the idle counter and go there
-        return this.shop.find(CheckoutCounter::isIdle)
-                .map(checkoutCounter -> checkoutCounter.addCustomerToCounter(time, customer))
-                // TODO: If greedy, find the shortest queue
-                .orElseGet(() -> this.shop
-                        .find(CheckoutCounter::canAcceptCustomer)
-                        .map(checkoutCounter -> checkoutCounter.addCustomerToCounter(time, customer))
-                        .orElseGet(() -> {
-                            this.noteLeave(time, customer);
-                            return Optional.empty();
-                        }));
+        return this.shop.find(CheckoutCounter::isIdle).map(checkoutCounter -> new Event[]{
+                new EventImpl(time, () -> checkoutCounter.addCustomerToCounter(time, customer))
+        }).or(() -> this.shop.find(CheckoutCounter::canAcceptCustomer)
+                .map(checkoutCounter -> Optional.of(
+                        new Event[]{
+                                new EventImpl(time, () -> checkoutCounter.addCustomerToCounter(time, customer))
+                        }
+                ))
+                .orElseGet(() -> {
+                    this.noteLeave(time, customer);
+                    return Optional.empty();
+                }));
+    }
+
+    /**
+     * Run simulation
+     */
+    public SimState run() {
+        double time = 0.0;
+        for (int i = 0; i < this.numOfCustomers; i++) {
+            this.simulateArrival(time).ifPresent(this.eventStreamProvider::addEvents);
+            time += this.randomGenerator.genInterArrivalTime();
+        }
+
+        this.eventStreamProvider.processEvents();
+
+        return this;
     }
 
     /**

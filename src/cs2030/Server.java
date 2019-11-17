@@ -37,8 +37,7 @@ class Server implements CheckoutHandler, HasRestState {
      * waiting customer.
      */
     public String toString() {
-        return Integer.toString(this.id);
-        // return "" + this.id + " (Q: " + waitingCustomer.map(c -> c.toString()).orElse("-") + ")";
+        return "server " + this.id;
     }
 
     /**

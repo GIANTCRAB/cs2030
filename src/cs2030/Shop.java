@@ -27,13 +27,16 @@ class Shop {
      *
      * @param numOfServers The number of servers.
      */
-    Shop(int numOfServers, int numOfSelfCheckout, RandomGenerator randomGenerator, Logger logger, Statistics statistics) {
-        final int MAX_WAITING_CUSTOMERS = 1;
-
+    Shop(int numOfServers,
+         int numOfSelfCheckout,
+         int maxQueueLength,
+         RandomGenerator randomGenerator,
+         Logger logger,
+         Statistics statistics) {
         this.checkoutCounters = new ArrayList<>();
         Stream.iterate(1, i -> i + 1)
                 .map(num -> new ServerCounter(
-                                new ServerCheckoutQueue(MAX_WAITING_CUSTOMERS),
+                                new ServerCheckoutQueue(maxQueueLength),
                                 new Server(num),
                                 randomGenerator,
                                 logger,

@@ -25,8 +25,7 @@ public class EventStreamProvider {
 
     public void processEvents() {
         Stream.generate(this.events::poll)
-                .limit(this.events.size())
-                .filter(Objects::nonNull)
+                .takeWhile(Objects::nonNull)
                 .forEach(event -> event.execute().ifPresent(this::addEvents));
     }
 }

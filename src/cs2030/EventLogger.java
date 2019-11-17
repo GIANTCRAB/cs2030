@@ -13,7 +13,7 @@ public class EventLogger implements Logger {
 
     @Override
     public String toString() {
-        return super.toString();
+        return this.logInfo.toString();
     }
 
     @Override

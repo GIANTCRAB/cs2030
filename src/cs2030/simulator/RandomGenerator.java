@@ -13,7 +13,7 @@ public class RandomGenerator {
     private final double customerServiceRate;
     private final double serverRestingRate;
 
-    RandomGenerator(int seed, double customerArrivalRate, double customerServiceRate, double serverRestingRate) {
+    public RandomGenerator(int seed, double customerArrivalRate, double customerServiceRate, double serverRestingRate) {
         this.rngArrival = new Random((long) seed);
         this.rngService = new Random((long) (seed + 1));
         this.rngRest = new Random((long) (seed + 2));
