@@ -3,7 +3,6 @@ package cs2030;
 import cs2030.simulator.RandomGenerator;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * This class encapsulates all the simulation states.  There are four main
@@ -98,21 +97,6 @@ public class SimState {
     }
 
     /**
-     * Called when a customer leaves the shops without service.
-     * Update the log and statistics.
-     *
-     * @param time     The time this customer leaves.
-     * @param customer The customer who leaves.
-     * @return A new state of the simulation.
-     */
-    public SimState noteLeave(double time, Customer customer) {
-        this.log.log(String.format("%.3f %s leaves\n", time, customer));
-        this.stats.looseOneCustomer();
-
-        return this;
-    }
-
-    /**
      * Simulates the logic of what happened when a customer arrives.
      * The customer is either served, waiting to be served, or leaves.
      *
@@ -139,28 +123,30 @@ public class SimState {
         // Find the idle counter and go there
         return this.shop.find(CheckoutCounter::isIdle).map(checkoutCounter -> new Event[]{
                 new EventImpl(time, () -> checkoutCounter.addCustomerToCounter(time, customer))
-        }).or(() -> this.shop.find(CheckoutCounter::canAcceptCustomer)
-                .map(checkoutCounter -> Optional.of(
-                        new Event[]{
-                                new EventImpl(time, () -> checkoutCounter.addCustomerToCounter(time, customer))
-                        }
-                ))
-                .orElseGet(() -> {
-                    this.noteLeave(time, customer);
+        }).or(() -> this.shop.find(CheckoutCounter::canAcceptCustomer).map(checkoutCounter -> new Event[]{
+                new EventImpl(time, () -> checkoutCounter.addCustomerToCounter(time, customer))
+        }).or(() -> Optional.of(new Event[]{
+                new EventImpl(time, () -> {
+                    this.log.log(String.format("%.3f %s leaves\n", time, customer));
+                    this.stats.looseOneCustomer();
+
                     return Optional.empty();
-                }));
+                }),
+        })));
     }
 
     /**
-     * Run simulation
+     * Populate data and run simulation
      */
     public SimState run() {
+        // Generate data
         double time = 0.0;
         for (int i = 0; i < this.numOfCustomers; i++) {
             this.simulateArrival(time).ifPresent(this.eventStreamProvider::addEvents);
             time += this.randomGenerator.genInterArrivalTime();
         }
 
+        // Run the event stream
         this.eventStreamProvider.processEvents();
 
         return this;

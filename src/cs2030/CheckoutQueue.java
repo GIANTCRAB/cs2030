@@ -25,10 +25,8 @@ abstract class CheckoutQueue {
     }
 
     public CheckoutQueue joinCustomerQueue(Customer customer) {
-        final Queue<Customer> customerQueue = this.customerQueue;
-
         if (this.canJoinCustomerQueue()) {
-            customerQueue.add(customer);
+            this.customerQueue.add(customer);
         }
 
         return this;

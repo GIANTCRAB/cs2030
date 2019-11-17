@@ -35,15 +35,14 @@ class Shop {
          Statistics statistics) {
         this.checkoutCounters = new ArrayList<>();
         Stream.iterate(1, i -> i + 1)
-                .map(num -> new ServerCounter(
-                                new ServerCheckoutQueue(maxQueueLength),
-                                new Server(num),
-                                randomGenerator,
-                                logger,
-                                statistics
-                        )
-                )
                 .limit(numOfServers)
+                .map(num -> new ServerCounter(
+                        new ServerCheckoutQueue(maxQueueLength),
+                        new Server(num),
+                        randomGenerator,
+                        logger,
+                        statistics)
+                )
                 .forEach(this.checkoutCounters::add);
 
         // TODO: initialize self checkout
