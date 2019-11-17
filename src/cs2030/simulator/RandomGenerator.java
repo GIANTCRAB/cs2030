@@ -25,23 +25,23 @@ public class RandomGenerator {
         this.serverRestingRate = serverRestingRate;
     }
 
-    double genInterArrivalTime() {
+    public double genInterArrivalTime() {
         return -Math.log(this.rngArrival.nextDouble()) / this.customerArrivalRate;
     }
 
-    double genServiceTime() {
+    public double genServiceTime() {
         return -Math.log(this.rngService.nextDouble()) / this.customerServiceRate;
     }
 
-    double genRandomRest() {
+    public double genRandomRest() {
         return this.rngRest.nextDouble();
     }
 
-    double genRestPeriod() {
+    public double genRestPeriod() {
         return -Math.log(this.rngRestPeriod.nextDouble()) / this.serverRestingRate;
     }
 
-    double genCustomerType() {
+    public double genCustomerType() {
         return this.rngCustomerType.nextDouble();
     }
 }
