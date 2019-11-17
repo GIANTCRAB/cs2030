@@ -40,6 +40,9 @@ public class ServerCounter implements HasOneCheckoutHandler {
                 // Counter staff is idling
                 return this.startServingCustomer(time);
             }
+
+            // Log waiting
+            this.logger.log(String.format("%.3f %s waits to be served by %s\n", time, customer, this.server));
         }
 
         return Optional.empty();
