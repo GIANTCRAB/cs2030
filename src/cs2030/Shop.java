@@ -1,9 +1,10 @@
 package cs2030;
 
+import cs2030.simulator.RandomGenerator;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.Optional;
 
@@ -19,29 +20,36 @@ class Shop {
     /**
      * List of servers.
      */
-    private final List<CheckoutCounter> checkoutCounters = new ArrayList<>();
+    private final List<CheckoutCounter> checkoutCounters;
+    private final RandomGenerator randomGenerator;
+    private final Logger logger;
+    private final Statistics statistics;
 
     /**
      * Create a new shop with a given number of servers.
      *
      * @param numOfServers The number of servers.
      */
-    Shop(int numOfServers, int numOfSelfCheckout) {
+    Shop(int numOfServers, int numOfSelfCheckout, RandomGenerator randomGenerator, Logger logger, Statistics statistics) {
+        this.randomGenerator = randomGenerator;
+        this.logger = logger;
+        this.statistics = statistics;
         final int MAX_WAITING_CUSTOMERS = 1;
 
+        this.checkoutCounters = new ArrayList<>();
         Stream.iterate(1, i -> i + 1)
-                .map(num -> new ServerCounter(new ServerCheckoutQueue(MAX_WAITING_CUSTOMERS), new Server(num)))
+                .map(num -> new ServerCounter(
+                                new ServerCheckoutQueue(MAX_WAITING_CUSTOMERS),
+                                new Server(num),
+                                this.randomGenerator,
+                                this.logger,
+                                this.statistics
+                        )
+                )
                 .limit(numOfServers)
                 .forEach(this.checkoutCounters::add);
 
         // TODO: initialize self checkout
-    }
-
-    /**
-     * Constructor for updated shop.
-     */
-    Shop(List<Server> servers) {
-        this.servers = servers;
     }
 
     /**
@@ -55,17 +63,6 @@ class Shop {
         return this.checkoutCounters.stream()
                 .filter(predicate)
                 .findFirst();
-    }
-
-    /**
-     * Returns a new shop when one of the server changes its state.
-     */
-    public Shop replace(Server server) {
-        return new Shop(
-                servers.stream()
-                        .map(s -> (s.equals(server) ? server : s))
-                        .collect(Collectors.toList())
-        );
     }
 
     /**

@@ -12,9 +12,9 @@ public class EventImpl implements Event {
     /**
      * The action to execute
      */
-    private final Supplier<Optional<Event>> action;
+    private final Supplier<Optional<Event[]>> action;
 
-    public EventImpl(double time, Supplier<Optional<Event>> action) {
+    public EventImpl(double time, Supplier<Optional<Event[]>> action) {
         this.time = time;
         this.action = action;
     }
@@ -25,7 +25,7 @@ public class EventImpl implements Event {
     }
 
     @Override
-    public Optional<Event> execute() {
+    public Optional<Event[]> execute() {
         return this.action.get();
     }
 

@@ -1,5 +1,6 @@
 package cs2030;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -14,18 +15,18 @@ public class EventStreamProvider {
     public EventStreamProvider() {
     }
 
-    Event generateEvent() {
-
-    }
-
     public void addEvent(Event event) {
         this.events.add(event);
+    }
+
+    public void addEvents(Event[] events) {
+        this.events.addAll(Arrays.asList(events));
     }
 
     public void processEvents() {
         Stream.generate(this.events::poll)
                 .limit(this.events.size())
                 .filter(Objects::nonNull)
-                .forEach(event -> event.execute().ifPresent(this::addEvent));
+                .forEach(event -> event.execute().ifPresent(this::addEvents));
     }
 }

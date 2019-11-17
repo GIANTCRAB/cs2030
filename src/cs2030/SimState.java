@@ -1,9 +1,5 @@
 package cs2030;
 
-import java.util.Optional;
-import java.util.stream.Stream;
-import java.util.function.Function;
-
 /**
  * This class encapsulates all the simulation states.  There are four main
  * components: (i) the event queue, (ii) the statistics, (iii) the shop
@@ -14,61 +10,10 @@ import java.util.function.Function;
  * @version CS2030 AY19/20 Sem 1 Lab 7
  */
 public class SimState {
-
-    /**
-     * The Event class encapsulates information and methods pertaining to a
-     * Simulator event. Stores a lambda that denotes type of event - arrival or
-     * done.
-     */
-    private class Event implements Comparable<Event> {
-        /**
-         * The time this event occurs at.
-         */
-        private final double time;
-
-        /**
-         * A function that this event will execute.
-         */
-        private final Function<SimState, SimState> lambda;
-
-        /**
-         * Creates an event and initializes it.
-         *
-         * @param time The time of occurrence.
-         * @param f    The function that this event will execute.
-         */
-        public Event(double time, Function<SimState, SimState> f) {
-            this.time = time;
-            this.lambda = f;
-        }
-
-        /**
-         * Defines natural ordering of events by their time.
-         * Events ordered in ascending order of their timestamps.
-         *
-         * @param other Another event to compare against.
-         * @return 0 if two events occur at same time, a positive number if
-         * this event has later than other event, a negative number otherwise.
-         */
-        public int compareTo(Event other) {
-            return (int) Math.signum(this.time - other.time);
-        }
-
-        /**
-         * Smulates this event by applying the lambda.
-         *
-         * @param state The current simulation state.
-         * @return A new state of simulation.
-         */
-        public SimState simulate(SimState state) {
-            return this.lambda.apply(state);
-        }
-    }
-
     /**
      * The priority queue of events.
      */
-    private PriorityQueue<Event> events;
+    private final EventStreamProvider eventStreamProvider;
 
     /**
      * The statistics maintained.
@@ -83,7 +28,7 @@ public class SimState {
     /**
      * The event logs.
      */
-    private final String log;
+    private final Logger log;
 
     /**
      * The customer id.
@@ -93,16 +38,16 @@ public class SimState {
     /**
      * A private constructor of internal states.
      *
-     * @param shop   The list of servers.
-     * @param stats  The statistics being kept.
-     * @param events A priority queue of events.
-     * @param log    A log of what's happened so far.
+     * @param shop                The list of servers.
+     * @param stats               The statistics being kept.
+     * @param eventStreamProvider A priority queue of events.
+     * @param log                 A log of what's happened so far.
      */
-    private SimState(Shop shop, Statistics stats, PriorityQueue<Event> events,
-                     String log, int lastCustomerId) {
+    private SimState(Shop shop, Statistics stats, EventStreamProvider eventStreamProvider,
+                     Logger log, int lastCustomerId) {
         this.shop = shop;
         this.stats = stats;
-        this.events = events;
+        this.eventStreamProvider = eventStreamProvider;
         this.log = log;
         this.lastCustomerId = lastCustomerId;
     }
@@ -112,11 +57,11 @@ public class SimState {
      *
      * @param numOfServers The number of servers.
      */
-    public SimState(int numOfServers) {
-        this(new Shop(numOfServers),
+    public SimState(int numOfServers, int numOfSelfCheckout) {
+        this(new Shop(numOfServers, numOfSelfCheckout),
                 new Statistics(),
-                new PriorityQueue<>(),
-                "", 1);
+                new EventStreamProvider(),
+                new EventLogger(), 1);
     }
 
     /**
@@ -126,7 +71,7 @@ public class SimState {
      * @return The new simulation state.
      */
     private SimState stats(Statistics stats) {
-        return new SimState(this.shop, stats, this.events, this.log, this.lastCustomerId);
+        return new SimState(this.shop, stats, this.eventStreamProvider, this.log, this.lastCustomerId);
     }
 
     /**
@@ -136,18 +81,18 @@ public class SimState {
      * @return The new simulation state.
      */
     private SimState server(Server s) {
-        return new SimState(shop.replace(s), this.stats, this.events, this.log,
+        return new SimState(shop.replace(s), this.stats, this.eventStreamProvider, this.log,
                 this.lastCustomerId);
     }
 
     /**
      * Update the event queue of this simulations.
      *
-     * @param pq The priority queue to replace the existing one.
+     * @param eventStreamProvider The priority queue to replace the existing one.
      * @return The new simulation state.
      */
-    private SimState events(PriorityQueue<Event> pq) {
-        return new SimState(this.shop, this.stats, pq, this.log, this.lastCustomerId);
+    private SimState events(EventStreamProvider eventStreamProvider) {
+        return new SimState(this.shop, this.stats, eventStreamProvider, this.log, this.lastCustomerId);
     }
 
     /**
@@ -157,7 +102,7 @@ public class SimState {
      * @return The new simulation state.
      */
     private SimState log(String s) {
-        return new SimState(this.shop, this.stats, this.events, this.log + s, this.lastCustomerId);
+        return new SimState(this.shop, this.stats, this.eventStreamProvider, this.log.log(s), this.lastCustomerId);
     }
 
     /**
@@ -167,31 +112,7 @@ public class SimState {
      * @return The new simulation state.
      */
     private SimState id(int id) {
-        return new SimState(this.shop, this.stats, this.events, this.log, id);
-    }
-
-    /**
-     * Add an event to the simulation's event queue.
-     *
-     * @param time   The time the event to be added occur.
-     * @param lambda How the state to be updated upon execution of this event.
-     * @return The new simulation state.
-     */
-    public SimState addEvent(double time, Function<SimState, SimState> lambda) {
-        return events(events.add(new Event(time, lambda)));
-    }
-
-    /**
-     * Retrieve the next event with earliest time stamp from the
-     * priority queue, and a new state.  If there is no more event, an
-     * Optional.empty will be returned.
-     *
-     * @return A pair object with an (optional) event and the new simulation
-     * state.
-     */
-    private Pair<Optional<Event>, SimState> nextEvent() {
-        Pair<Optional<Event>, PriorityQueue<Event>> result = this.events.poll();
-        return Pair.of(result.first, events(result.second));
+        return new SimState(this.shop, this.stats, this.eventStreamProvider, this.log, id);
     }
 
     /**
@@ -215,22 +136,6 @@ public class SimState {
      */
     public SimState noteWait(double time, Server s, Customer c) {
         return log(String.format("%.3f %s waits to be served by %s\n", time, c, s));
-    }
-
-    /**
-     * Called when a customer is served in the simulation.  This methods
-     * update the logs and the statistics of the simulation.
-     *
-     * @param time The time the customer arrives.
-     * @param s    The server that serves the customer.
-     * @param c    The customer that is served.
-     * @return A new state of the simulation after the customer is served.
-     */
-    public SimState noteServed(double time, Server s, Customer c) {
-        return log(String.format("%.3f %s served by %s\n", time, c, s))
-                .stats(stats
-                        .serveOneCustomer()
-                        .recordWaitingTime(c.timeWaited(time)));
     }
 
     /**
@@ -284,10 +189,11 @@ public class SimState {
      * @return A new state of the simulation.
      */
     private SimState processArrival(double time, Customer customer) {
-        return shop.find(server -> server.isIdle())
+        return shop.find(CheckoutCounter::isIdle)
                 .map(server -> serveCustomer(time, server, customer))
+                // TODO: If greedy, find the shortest queue
                 .or(() -> shop
-                        .find(server -> !server.hasWaitingCustomer())
+                        .find(CheckoutCounter::canAcceptCustomer)
                         .map(server -> noteWait(time, server, customer)
                                 .server(server.askToWait(customer))))
                 .orElseGet(() -> noteLeave(time, customer));
@@ -319,27 +225,21 @@ public class SimState {
      * @param customer The customer being served.
      * @return A new state of the simulation.
      */
-    public SimState serveCustomer(double time, Server server, Customer customer) {
+    public SimState serveCustomer(double time, CheckoutCounter checkoutCounter, Customer customer) {
         double doneTime = time + Simulation.SERVICE_TIME;
+        final Event serveEvent = new EventImpl(time, () -> {
+            checkoutCounter.addCustomerToCounter(customer);
+            checkoutCounter.startServingCustomer();
+            // TODO: what about self checkout machine?
+            this.noteServed(time, ((ServerCounter) checkoutCounter).getCheckoutHandler(), customer);
+            return new EventImpl(doneTime, () -> {
+                // Do something when done
+            });
+        });
+        this.eventStreamProvider.addEvent(serveEvent);
         return server(server.serve(customer))
                 .noteServed(time, server, customer)
                 .addEvent(doneTime, state -> state.simulateDone(doneTime, server, customer));
-    }
-
-    /**
-     * The main simulation loop.  Repeatedly get events from the event
-     * queue, simulate and update the event.  Return the final simulation
-     * state.
-     *
-     * @return The final state of the simulation.
-     */
-    public SimState run() {
-        Pair<Optional<Event>, SimState> s = Stream.iterate(this.nextEvent(),
-                p -> p.first.isPresent(),
-                p -> p.first.get().simulate(p.second).nextEvent())
-                .reduce((p, q) -> q)
-                .orElseThrow();
-        return s.first.get().simulate(s.second);
     }
 
     /**
@@ -349,6 +249,6 @@ public class SimState {
      * @return A string representation of the simulation.
      */
     public String toString() {
-        return log + stats.toString();
+        return this.log + this.stats.toString();
     }
 }

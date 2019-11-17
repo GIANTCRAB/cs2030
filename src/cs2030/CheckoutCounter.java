@@ -11,6 +11,8 @@ public interface CheckoutCounter {
 
     boolean isIdle();
 
+    boolean isAvailable();
+
     boolean canAcceptCustomer();
 
     Optional<Event[]> finishServingCustomer(double time);

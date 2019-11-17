@@ -1,5 +1,7 @@
 package cs2030;
 
+import java.util.Optional;
+
 /**
  * The cs2030.Server class keeps track of who is the customer being served (if any)
  * and who is the customer waiting to be served (if any).
@@ -72,12 +74,16 @@ class Server implements CheckoutHandler, HasRestState {
     }
 
     @Override
-    public void takeRest() {
+    public Optional<Event[]> takeRest(double doneTime) {
         this.restState = RestStates.SERVER_REST;
+
+        return Optional.of(new EventImpl[]{new EventImpl(doneTime, this::stopRest)});
     }
 
     @Override
-    public void stopRest() {
+    public Optional<Event[]> stopRest() {
         this.restState = RestStates.SERVER_BACK;
+
+        return Optional.empty();
     }
 }
