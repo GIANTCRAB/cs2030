@@ -1,9 +1,11 @@
 package cs2030;
 
-public interface CheckoutCounter {
-    void addCustomerToCounter(Customer customer);
+import java.util.Optional;
 
-    void startServingCustomer();
+public interface CheckoutCounter {
+    Optional<Event[]> addCustomerToCounter(double time, Customer customer);
+
+    Optional<Event[]> startServingCustomer(double time);
 
     boolean isServingCustomer();
 
@@ -11,5 +13,5 @@ public interface CheckoutCounter {
 
     boolean canAcceptCustomer();
 
-    void finishServingCustomer();
+    Optional<Event[]> finishServingCustomer(double time);
 }
