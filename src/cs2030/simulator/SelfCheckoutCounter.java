@@ -29,9 +29,6 @@ class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
 
     @Override
     public Optional<Event[]> addCustomerToCounter(double time, Customer customer) {
-        if (customer.toString().equals("14")) {
-            System.out.println("add 14 to customer counter");
-        }
         if (this.canAcceptCustomer()) {
             final var availCheckoutHandler = this.getQueueableCheckoutHandler();
             this.selfCheckoutQueue.joinCustomerQueue(customer);
@@ -128,10 +125,6 @@ class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
             final Customer customer = selfCheckOutMachineAndCustomer.get();
             // Set customer to done
             customer.setDone();
-
-            if (customer.toString().equals("13")) {
-                System.out.println("13 finish");
-            }
 
             // Do logging and statistics
             this.logger.log(String.format("%.3f %s done serving by %s\n", time, customer, selfCheckoutMachine));
