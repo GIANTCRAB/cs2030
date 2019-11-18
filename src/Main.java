@@ -41,6 +41,7 @@ class Main {
         final double serviceRate = scanner.nextDouble();
         final double restingRate = scanner.nextDouble();
         final double restingProbability = scanner.nextDouble();
+        final double greedyProbability = scanner.nextDouble();
 
         return new SimState(numOfCustomers,
                 numOfServers,
@@ -50,7 +51,8 @@ class Main {
                 arrivalRate,
                 serviceRate,
                 restingRate,
-                restingProbability
+                restingProbability,
+                greedyProbability
         );
     }
 

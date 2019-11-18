@@ -18,6 +18,11 @@ public class SimState {
     private final int numOfCustomers;
 
     /**
+     * The chance of getting a greedy customer
+     */
+    private final double greedyProbability;
+
+    /**
      * The priority queue of events.
      */
     private final EventStreamProvider eventStreamProvider;
@@ -69,7 +74,8 @@ public class SimState {
                     double arrivalRate,
                     double serviceRate,
                     double serverRestingRate,
-                    double restingProbability) {
+                    double restingProbability,
+                    double greedyProbability) {
         this.numOfCustomers = numOfCustomers;
         this.stats = new Statistics();
         this.eventStreamProvider = new EventStreamProvider();
@@ -77,6 +83,7 @@ public class SimState {
         this.randomGenerator = new RandomGenerator(rngBaseSeed, arrivalRate, serviceRate, serverRestingRate);
         this.shop = new Shop(numOfServers, numOfSelfCheckout, maxQueueLength, restingProbability, this.randomGenerator, this.log, this.stats);
         this.lastCustomerId = 0;
+        this.greedyProbability = greedyProbability;
     }
 
     /**
@@ -114,8 +121,13 @@ public class SimState {
      * @param time The time the customer arrives.
      */
     public Optional<Event[]> simulateArrival(double time) {
-        // TODO: implement greedy customer arrival
-        Customer customer = new NormalCustomer(time, this.incrementId().lastCustomerId);
+        Customer customer;
+        if (this.randomGenerator.genCustomerType() < this.greedyProbability) {
+            // Generate greedy customer
+            customer = new GreedyCustomer(time, this.incrementId().lastCustomerId);
+        } else {
+            customer = new NormalCustomer(time, this.incrementId().lastCustomerId);
+        }
         // Create arrival event
         return Optional.of(new Event[]{
                 new EventImpl(time, () -> this.noteArrival(time, customer)
