@@ -1,9 +1,10 @@
 package cs2030.simulator;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
-interface HasManyCheckoutHandlers extends CheckoutCounter {
-    void addCheckoutHandler(CheckoutHandler checkoutHandler);
+interface HasManyCheckoutHandlers {
+    Set<CheckoutHandler> getCheckoutHandlers();
 
-    List<CheckoutHandler> getCheckoutHandlers();
+    Optional<Event[]> finishServingCustomer(double time, CheckoutHandler selfCheckoutMachine);
 }

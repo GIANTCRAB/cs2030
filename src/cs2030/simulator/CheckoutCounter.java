@@ -14,6 +14,4 @@ interface CheckoutCounter {
     boolean isAvailable();
 
     boolean canAcceptCustomer();
-
-    Optional<Event[]> finishServingCustomer(double time);
 }

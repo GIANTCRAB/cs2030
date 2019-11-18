@@ -1,8 +1,6 @@
 package cs2030.simulator;
 
-import java.util.Arrays;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
     private final CheckoutQueue checkoutQueue;
