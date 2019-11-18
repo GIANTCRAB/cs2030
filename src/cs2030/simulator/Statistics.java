@@ -69,8 +69,11 @@ class Statistics {
      * followed by the number of lost customer.
      */
     public String toString() {
+        // Prevent divide by zero
+        final double averageWaitingTime = totalNumOfServedCustomer != 0 ? totalWaitingTime / totalNumOfServedCustomer : 0;
+
         return String.format("[%.3f %d %d]",
-                totalWaitingTime / totalNumOfServedCustomer,
+                averageWaitingTime,
                 totalNumOfServedCustomer, totalNumOfLostCustomer);
     }
 }
