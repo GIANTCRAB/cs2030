@@ -3,6 +3,9 @@ package cs2030.simulator;
 import java.util.*;
 import java.util.Map.Entry;
 
+/**
+ * SelfCheckoutCounter is an implementation of CheckoutCounter and HasManyCheckoutHandlers (meaning there can be multiple self checkout machines in the same counter)
+ */
 class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
     private final SelfCheckoutQueue<Customer> selfCheckoutQueue;
     private final Map<CheckoutHandler, Optional<Customer>> selfCheckoutMachines;
@@ -38,8 +41,6 @@ class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
                 return this.startServingCustomer(time);
             }
 
-            // Set to waiting
-            customer.setWait();
             // Log waiting
             this.logger.log(String.format("%.3f %s waits to be served by %s\n", time, customer, getFirstCheckoutHandler()));
         }
@@ -47,15 +48,24 @@ class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
         return Optional.empty();
     }
 
+    /**
+     * @return First available SCM
+     */
     private Optional<CheckoutHandler> getAvailableCheckoutHandler() {
         return this.selfCheckoutMachines.entrySet().stream().filter(entry -> entry.getValue().isEmpty()).findFirst().map(Entry::getKey);
     }
 
+    /**
+     * @return First available SCM or the first SCM (for queueing purposes)
+     */
     private CheckoutHandler getQueueableCheckoutHandler() {
         return this.getAvailableCheckoutHandler()
                 .orElseGet(this::getFirstCheckoutHandler);
     }
 
+    /**
+     * @return The first SCM in the pool of SCMs
+     */
     private CheckoutHandler getFirstCheckoutHandler() {
         return this.selfCheckoutMachines.keySet().stream().findFirst().get();
     }
@@ -68,7 +78,6 @@ class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
             final CheckoutHandler checkoutHandler = this.getAvailableCheckoutHandler().get();
 
             // Set to served
-            customer.setServed();
             this.selfCheckoutMachines.put(checkoutHandler, Optional.of(customer));
 
             // Log customer who was served
@@ -119,7 +128,8 @@ class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
     }
 
     /**
-     * @param time The time which this will be executed
+     * @param time                The time which this will be executed
+     * @param selfCheckoutMachine the specific SCM which has serviced the customer
      * @return An array of events to be executed.
      */
     @Override
@@ -128,8 +138,6 @@ class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
         if (selfCheckOutMachineAndCustomer.isPresent()) {
             // Retrieve customer
             final Customer customer = selfCheckOutMachineAndCustomer.get();
-            // Set customer to done
-            customer.setDone();
 
             // Do logging and statistics
             this.logger.log(String.format("%.3f %s done serving by %s\n", time, customer, selfCheckoutMachine));

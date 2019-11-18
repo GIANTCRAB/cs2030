@@ -3,8 +3,14 @@ package cs2030.simulator;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
+/**
+ * The base abstraction of all queues used by checkout counters.
+ * The goal of this class is to reduce code duplication of SelfCheckoutQueue and ServerCheckoutQueue as they have many common ideas
+ *
+ * @param <T>
+ */
 abstract class CheckoutQueue<T> {
-    protected final Queue<T> customerQueue;
+    private final Queue<T> customerQueue;
     private final int maxQueueCapacity;
 
     CheckoutQueue(int maxQueueCapacity) {
@@ -12,19 +18,19 @@ abstract class CheckoutQueue<T> {
         this.maxQueueCapacity = maxQueueCapacity;
     }
 
-    public Integer getCurrentQueueLength() {
+    Integer getCurrentQueueLength() {
         return this.customerQueue.size();
     }
 
-    public int getMaxQueueCapacity() {
+    private int getMaxQueueCapacity() {
         return this.maxQueueCapacity;
     }
 
-    public boolean canJoinCustomerQueue() {
+    boolean canJoinCustomerQueue() {
         return this.customerQueue.size() < this.getMaxQueueCapacity();
     }
 
-    public CheckoutQueue joinCustomerQueue(T customer) {
+    CheckoutQueue joinCustomerQueue(T customer) {
         if (this.canJoinCustomerQueue()) {
             this.customerQueue.add(customer);
         }
@@ -32,7 +38,7 @@ abstract class CheckoutQueue<T> {
         return this;
     }
 
-    public T pollCustomer() {
+    T pollCustomer() {
         return this.customerQueue.poll();
     }
 }

@@ -60,11 +60,12 @@ public class SimState {
      * @param numOfCustomers     The number of customers.
      * @param numOfSelfCheckout  The number of self checkout machines.
      * @param maxQueueLength     The maximum queue length of checkout queues
-     * @param rngBaseSeed
-     * @param arrivalRate
-     * @param serviceRate
-     * @param serverRestingRate
-     * @param restingProbability
+     * @param rngBaseSeed        The base seed for randomizing
+     * @param arrivalRate        The rate of arrival of customers
+     * @param serviceRate        THe rate of which customers are serviced
+     * @param serverRestingRate  The rate of which servers will rest
+     * @param restingProbability The chance of servers resting after serving customers
+     * @param greedyProbability  The chance of a customer being greedy
      */
     public SimState(int numOfCustomers,
                     int numOfServers,
@@ -104,7 +105,7 @@ public class SimState {
      * @param c    The customer that arrrives.
      * @return A new state of the simulation after the customer arrives.
      */
-    public SimState noteArrival(double time, Customer c) {
+    private SimState noteArrival(double time, Customer c) {
         this.eventStreamProvider.addEvent(
                 new EventImpl(time, () -> {
                     this.log.log(String.format("%.3f %s arrives\n", time, c));
@@ -120,7 +121,7 @@ public class SimState {
      *
      * @param time The time the customer arrives.
      */
-    public Optional<Event[]> simulateArrival(double time) {
+    private Optional<Event[]> simulateArrival(double time) {
         Customer customer;
         if (this.randomGenerator.genCustomerType() < this.greedyProbability) {
             // Generate greedy customer
@@ -165,7 +166,6 @@ public class SimState {
 
         return Optional.of(new Event[]{
                 new EventImpl(time, () -> {
-                    customer.setLeave();
                     this.log.log(String.format("%.3f %s leaves\n", time, customer));
                     this.stats.looseOneCustomer();
 

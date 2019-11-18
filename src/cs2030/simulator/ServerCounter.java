@@ -2,6 +2,11 @@ package cs2030.simulator;
 
 import java.util.Optional;
 
+/**
+ * The counter for manual servers
+ *
+ * This class implements the base interface of CheckoutCounter and HasOneCheckoutHandler (namely, one server)
+ */
 class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
     private final CheckoutQueue<Customer> checkoutQueue;
     private final Server server;
@@ -25,6 +30,9 @@ class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
         this.statistics = statistics;
     }
 
+    /**
+     * @return Returns the server in-charge of this counter
+     */
     @Override
     public CheckoutHandler getCheckoutHandler() {
         return this.server;
@@ -40,8 +48,6 @@ class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
                 return this.startServingCustomer(time);
             }
 
-            // Set to waiting
-            customer.setWait();
             // Log waiting
             this.logger.log(String.format("%.3f %s waits to be served by %s\n", time, customer, this.server));
         }
@@ -55,8 +61,6 @@ class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
         if (this.checkoutQueue.getCurrentQueueLength() > 0) {
             final Customer customer = this.checkoutQueue.pollCustomer();
 
-            // Set to served
-            customer.setServed();
             this.currentlyServing = Optional.of(customer);
 
             // Log customer who was served
@@ -109,7 +113,6 @@ class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
     public Optional<Event[]> finishServingCustomer(double time) {
         // Set customer to done
         final Customer customer = this.currentlyServing.get();
-        customer.setDone();
 
         // Do logging and statistics
         this.logger.log(String.format("%.3f %s done serving by %s\n", time, customer, this.server));

@@ -8,13 +8,12 @@ import java.util.stream.Stream;
  * A shop object maintains the list of servers and support queries
  * for server.
  *
- * @author weitsang
- * @author atharvjoshi
+ * @author woohuiren
  * @version CS2030 AY19/20 Sem 1 Lab 7
  */
 class Shop {
     /**
-     * List of servers.
+     * Set of servers.
      */
     private final Set<CheckoutCounter> checkoutCounters;
 
@@ -23,13 +22,13 @@ class Shop {
      *
      * @param numOfServers The number of servers.
      */
-    public Shop(int numOfServers,
-                int numOfSelfCheckout,
-                int maxQueueLength,
-                double restingProbability,
-                RandomGenerator randomGenerator,
-                Logger logger,
-                Statistics statistics) {
+    Shop(int numOfServers,
+         int numOfSelfCheckout,
+         int maxQueueLength,
+         double restingProbability,
+         RandomGenerator randomGenerator,
+         Logger logger,
+         Statistics statistics) {
         this.checkoutCounters = new LinkedHashSet<>();
         Stream.iterate(1, i -> i + 1)
                 .limit(numOfServers)
@@ -73,6 +72,11 @@ class Shop {
                 .findFirst();
     }
 
+    /**
+     * Returns a sorted stream, where the shortest queue comes first
+     *
+     * @return Sorted in ascending order
+     */
     public Stream<CheckoutCounter> getSortedCheckoutCounters() {
         return this.checkoutCounters.stream().sorted();
     }

@@ -6,8 +6,7 @@ import java.util.Optional;
  * The cs2030.simulator.Server class keeps track of who is the customer being served (if any)
  * and who is the customer waiting to be served (if any).
  *
- * @author weitsang
- * @author atharvjoshi
+ * @author woohuiren
  * @version CS2030 AY19/20 Sem 1 Lab 7
  */
 class Server implements CheckoutHandler, HasRestState {
@@ -16,12 +15,15 @@ class Server implements CheckoutHandler, HasRestState {
      */
     private final int id;
 
+    /**
+     * The states of the server
+     */
     private RestStates restState;
 
     /**
      * Creates a server and initalizes it with a unique id.
      */
-    public Server(int id) {
+    Server(int id) {
         this(id, RestStates.SERVER_BACK);
     }
 

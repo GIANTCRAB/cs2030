@@ -24,7 +24,7 @@ class Statistics {
      */
     private int totalNumOfLostCustomer;
 
-    public Statistics() {
+    Statistics() {
         this.totalWaitingTime = 0;
         this.totalNumOfServedCustomer = 0;
         this.totalNumOfLostCustomer = 0;

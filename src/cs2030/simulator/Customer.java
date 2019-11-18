@@ -9,7 +9,7 @@ package cs2030.simulator;
  * @author atharvjoshi
  * @version CS2030 AY19/20 Sem 1 Lab 7
  */
-abstract class Customer implements HasCustomerState {
+abstract class Customer {
     /**
      * The unique ID of this customer.
      */
@@ -21,11 +21,6 @@ abstract class Customer implements HasCustomerState {
     private final double timeArrived;
 
     /**
-     * The current state of the customer
-     */
-    private CustomerStates customerState;
-
-    /**
      * Create and initalize a new customer.
      * The {@code id} of the customer is set.
      *
@@ -34,7 +29,6 @@ abstract class Customer implements HasCustomerState {
     public Customer(double timeArrived, int id) {
         this.timeArrived = timeArrived;
         this.id = id;
-        this.customerState = CustomerStates.ARRIVES;
     }
 
     /**
@@ -70,30 +64,5 @@ abstract class Customer implements HasCustomerState {
     @Override
     public int hashCode() {
         return id;
-    }
-
-    @Override
-    public CustomerStates getCustomerState() {
-        return this.customerState;
-    }
-
-    @Override
-    public void setServed() {
-        this.customerState = CustomerStates.SERVED;
-    }
-
-    @Override
-    public void setWait() {
-        this.customerState = CustomerStates.WAITS;
-    }
-
-    @Override
-    public void setLeave() {
-        this.customerState = CustomerStates.LEAVES;
-    }
-
-    @Override
-    public void setDone() {
-        this.customerState = CustomerStates.DONE;
     }
 }

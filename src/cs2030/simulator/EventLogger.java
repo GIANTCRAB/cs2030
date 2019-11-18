@@ -12,9 +12,11 @@ class EventLogger implements Logger {
         return this.logInfo.toString();
     }
 
+    /**
+     * @param message the message to be logged by the event logger
+     */
     @Override
-    public Logger log(String message) {
+    public void log(String message) {
         this.logInfo.append(message);
-        return this;
     }
 }
