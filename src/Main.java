@@ -34,6 +34,7 @@ class Main {
     public static SimState initSimState(Scanner scanner) {
         final int rngBaseSeed = scanner.nextInt();
         final int numOfServers = scanner.nextInt();
+        final int numOfSelfCheckout = scanner.nextInt();
         final int maxQueueLength = scanner.nextInt();
         final int numOfCustomers = scanner.nextInt();
         final double arrivalRate = scanner.nextDouble();
@@ -41,7 +42,16 @@ class Main {
         final double restingRate = scanner.nextDouble();
         final double restingProbability = scanner.nextDouble();
 
-        return new SimState(numOfCustomers, numOfServers, 0, maxQueueLength, rngBaseSeed, arrivalRate, serviceRate, restingRate, restingProbability);
+        return new SimState(numOfCustomers,
+                numOfServers,
+                numOfSelfCheckout,
+                maxQueueLength,
+                rngBaseSeed,
+                arrivalRate,
+                serviceRate,
+                restingRate,
+                restingProbability
+        );
     }
 
     /**
