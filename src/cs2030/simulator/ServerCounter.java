@@ -1,10 +1,8 @@
 package cs2030.simulator;
 
-import cs2030.*;
-
 import java.util.Optional;
 
-public class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
+class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
     private final CheckoutQueue checkoutQueue;
     private final Server server;
     private final RandomGenerator randomGenerator;

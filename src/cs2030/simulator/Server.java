@@ -1,16 +1,16 @@
-package cs2030;
+package cs2030.simulator;
 
 import java.util.Optional;
 
 /**
- * The cs2030.Server class keeps track of who is the customer being served (if any)
+ * The cs2030.simulator.Server class keeps track of who is the customer being served (if any)
  * and who is the customer waiting to be served (if any).
  *
  * @author weitsang
  * @author atharvjoshi
  * @version CS2030 AY19/20 Sem 1 Lab 7
  */
-public class Server implements CheckoutHandler, HasRestState {
+class Server implements CheckoutHandler, HasRestState {
     /**
      * The unique ID of this server.
      */

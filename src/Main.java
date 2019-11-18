@@ -1,5 +1,3 @@
-package cs2030;
-
 import cs2030.simulator.SimState;
 
 import java.io.FileNotFoundException;

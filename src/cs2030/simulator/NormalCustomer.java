@@ -1,6 +1,6 @@
-package cs2030;
+package cs2030.simulator;
 
-public class NormalCustomer extends Customer {
+class NormalCustomer extends Customer {
     public NormalCustomer(double timeArrived, int id) {
         super(timeArrived, id);
     }

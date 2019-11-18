@@ -1,4 +1,4 @@
-package cs2030;
+package cs2030.simulator;
 
 import java.util.Arrays;
 import java.util.Objects;

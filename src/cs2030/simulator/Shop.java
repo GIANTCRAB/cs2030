@@ -1,7 +1,4 @@
-package cs2030;
-
-import cs2030.simulator.RandomGenerator;
-import cs2030.simulator.ServerCounter;
+package cs2030.simulator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +14,7 @@ import java.util.Optional;
  * @author atharvjoshi
  * @version CS2030 AY19/20 Sem 1 Lab 7
  */
-public class Shop {
+class Shop {
     /**
      * List of servers.
      */

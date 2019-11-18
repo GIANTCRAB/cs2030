@@ -1,7 +1,5 @@
 package cs2030.simulator;
 
-import cs2030.*;
-
 import java.util.Optional;
 
 /**

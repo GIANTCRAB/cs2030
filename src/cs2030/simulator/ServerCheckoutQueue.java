@@ -1,6 +1,6 @@
-package cs2030;
+package cs2030.simulator;
 
-public class ServerCheckoutQueue extends CheckoutQueue {
+class ServerCheckoutQueue extends CheckoutQueue {
     ServerCheckoutQueue(int maxQueueCapacity) {
         super(maxQueueCapacity);
     }

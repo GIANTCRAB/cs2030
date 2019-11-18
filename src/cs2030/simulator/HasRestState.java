@@ -1,8 +1,8 @@
-package cs2030;
+package cs2030.simulator;
 
 import java.util.Optional;
 
-public interface HasRestState {
+interface HasRestState {
     RestStates getRestState();
 
     Optional<Event[]> takeRest(double doneTime);
