@@ -1,6 +1,7 @@
 package cs2030.simulator;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -45,7 +46,21 @@ class Shop {
                 )
                 .forEach(this.checkoutCounters::add);
 
-        // TODO: initialize self checkout
+        // Initialize self checkout
+        if (numOfSelfCheckout > 0) {
+            final Hashtable<CheckoutHandler, SelfCheckoutQueue> selfCheckoutQueues = new Hashtable<>();
+            final Hashtable<CheckoutHandler, Optional<Customer>> selfCheckoutMachines = new Hashtable<>();
+            Stream.iterate(numOfServers, i -> i + 1)
+                    .limit(numOfServers + numOfSelfCheckout)
+                    .map(SelfCheckoutMachine::new)
+                    .forEach(selfCheckoutMachine -> {
+                        // Add to self checkout counter
+                        selfCheckoutQueues.put(selfCheckoutMachine, new SelfCheckoutQueue(maxQueueLength));
+                        selfCheckoutMachines.put(selfCheckoutMachine, Optional.empty());
+                    });
+            this.checkoutCounters.add(new SelfCheckoutCounter(selfCheckoutQueues, selfCheckoutMachines, randomGenerator, logger, statistics));
+        }
+
     }
 
     /**
