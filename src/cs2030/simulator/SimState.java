@@ -141,7 +141,6 @@ public class SimState {
 
         if (availableCounter.isPresent()) {
             final CheckoutCounter checkoutCounter = availableCounter.get();
-
             return Optional.of(new Event[]{
                     new EventImpl(time, () -> checkoutCounter.addCustomerToCounter(time, customer))
             });

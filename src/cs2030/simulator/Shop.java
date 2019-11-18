@@ -1,11 +1,8 @@
 package cs2030.simulator;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import java.util.Optional;
 
 /**
  * A shop object maintains the list of servers and support queries
@@ -19,7 +16,7 @@ class Shop {
     /**
      * List of servers.
      */
-    private final List<CheckoutCounter> checkoutCounters;
+    private final Set<CheckoutCounter> checkoutCounters;
 
     /**
      * Create a new shop with a given number of servers.
@@ -33,7 +30,7 @@ class Shop {
                 RandomGenerator randomGenerator,
                 Logger logger,
                 Statistics statistics) {
-        this.checkoutCounters = new ArrayList<>();
+        this.checkoutCounters = new LinkedHashSet<>();
         Stream.iterate(1, i -> i + 1)
                 .limit(numOfServers)
                 .map(num -> new ServerCounter(
@@ -48,10 +45,11 @@ class Shop {
 
         // Initialize self checkout
         if (numOfSelfCheckout > 0) {
-            final Hashtable<CheckoutHandler, SelfCheckoutQueue> selfCheckoutQueues = new Hashtable<>();
-            final Hashtable<CheckoutHandler, Optional<Customer>> selfCheckoutMachines = new Hashtable<>();
-            Stream.iterate(numOfServers, i -> i + 1)
-                    .limit(numOfServers + numOfSelfCheckout)
+            final Map<CheckoutHandler, SelfCheckoutQueue> selfCheckoutQueues = new LinkedHashMap<>();
+            final Map<CheckoutHandler, Optional<Customer>> selfCheckoutMachines = new LinkedHashMap<>();
+            final int selfCheckoutStart = numOfServers + 1;
+            Stream.iterate(selfCheckoutStart, x -> x + 1)
+                    .limit(numOfSelfCheckout)
                     .map(SelfCheckoutMachine::new)
                     .forEach(selfCheckoutMachine -> {
                         // Add to self checkout counter
