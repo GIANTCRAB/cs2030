@@ -88,6 +88,11 @@ class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
         return Optional.empty();
     }
 
+    @Override
+    public CheckoutQueue<Customer> getCheckoutQueue() {
+        return this.selfCheckoutQueue;
+    }
+
     private boolean isAvailable(CheckoutHandler checkoutHandler) {
         return this.selfCheckoutQueue.getCurrentQueueLength() <= 1 && this.selfCheckoutMachines.entrySet().parallelStream().anyMatch(entry -> entry.getKey().equals(checkoutHandler) && entry.getValue().isEmpty());
     }
@@ -136,5 +141,19 @@ class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
         }
 
         return Optional.empty();
+    }
+
+    /**
+     * Compares this object with the specified object for order.  Returns a
+     * negative integer, zero, or a positive integer as this object is less
+     * than, equal to, or greater than the specified object.
+     *
+     * @param o the object to be compared.
+     * @return a negative integer, zero, or a positive integer as this object
+     * is less than, equal to, or greater than the specified object.
+     */
+    @Override
+    public int compareTo(CheckoutCounter o) {
+        return this.getCheckoutQueue().getCurrentQueueLength().compareTo(o.getCheckoutQueue().getCurrentQueueLength());
     }
 }

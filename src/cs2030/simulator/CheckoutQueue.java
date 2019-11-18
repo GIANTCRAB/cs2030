@@ -12,7 +12,7 @@ abstract class CheckoutQueue<T> {
         this.maxQueueCapacity = maxQueueCapacity;
     }
 
-    public int getCurrentQueueLength() {
+    public Integer getCurrentQueueLength() {
         return this.customerQueue.size();
     }
 

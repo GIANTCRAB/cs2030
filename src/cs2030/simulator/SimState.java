@@ -135,9 +135,14 @@ public class SimState {
      */
     private Optional<Event[]> processArrival(double time, Customer customer) {
         // Find the idle counter and go there
-        // TODO: find shortest queue for greedy customer
-        final Optional<CheckoutCounter> availableCounter = this.shop.find(CheckoutCounter::isIdle)
-                .or(() -> this.shop.find(CheckoutCounter::canAcceptCustomer));
+        Optional<CheckoutCounter> availableCounter = this.shop.find(CheckoutCounter::isIdle);
+        if (customer instanceof GreedyCustomer) {
+            // find shortest queue for greedy customer
+            availableCounter = availableCounter.or(() -> this.shop.getSortedCheckoutCounters().filter(CheckoutCounter::canAcceptCustomer).findFirst());
+        } else {
+            // no preference, just search
+            availableCounter = availableCounter.or(() -> this.shop.find(CheckoutCounter::canAcceptCustomer));
+        }
 
         if (availableCounter.isPresent()) {
             final CheckoutCounter checkoutCounter = availableCounter.get();

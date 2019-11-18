@@ -73,6 +73,10 @@ class Shop {
                 .findFirst();
     }
 
+    public Stream<CheckoutCounter> getSortedCheckoutCounters() {
+        return this.checkoutCounters.stream().sorted();
+    }
+
     /**
      * Return a string representation of this shop.
      *

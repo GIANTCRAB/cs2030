@@ -77,6 +77,11 @@ class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
     }
 
     @Override
+    public CheckoutQueue<Customer> getCheckoutQueue() {
+        return this.checkoutQueue;
+    }
+
+    @Override
     public boolean isServingCustomer() {
         return this.currentlyServing.isPresent();
     }
@@ -130,5 +135,15 @@ class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
 
     private boolean isResting() {
         return this.server.getRestState() == RestStates.SERVER_REST;
+    }
+
+    /**
+     * Compares this object with the specified object for order.  Returns a
+     * negative integer, zero, or a positive integer as this object is less
+     * than, equal to, or greater than the specified object.
+     */
+    @Override
+    public int compareTo(CheckoutCounter o) {
+        return this.getCheckoutQueue().getCurrentQueueLength().compareTo(o.getCheckoutQueue().getCurrentQueueLength());
     }
 }
