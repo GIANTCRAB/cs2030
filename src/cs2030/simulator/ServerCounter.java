@@ -1,6 +1,6 @@
-package cs2030;
+package cs2030.simulator;
 
-import cs2030.simulator.RandomGenerator;
+import cs2030.*;
 
 import java.util.Optional;
 
@@ -12,7 +12,7 @@ public class ServerCounter implements HasOneCheckoutHandler {
     private final Statistics statistics;
     private Optional<Customer> currentlyServing = Optional.empty();
 
-    ServerCounter(ServerCheckoutQueue serverCheckoutQueue,
+    public ServerCounter(ServerCheckoutQueue serverCheckoutQueue,
                   Server server,
                   RandomGenerator randomGenerator,
                   Logger logger,

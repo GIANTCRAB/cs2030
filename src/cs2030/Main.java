@@ -1,6 +1,6 @@
 package cs2030;
 
-import cs2030.simulator.RandomGenerator;
+import cs2030.simulator.SimState;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -41,9 +41,7 @@ class Main {
         final double arrivalRate = scanner.nextDouble();
         final double serviceRate = scanner.nextDouble();
 
-        final RandomGenerator randomGenerator = new RandomGenerator(rngBaseSeed, arrivalRate, serviceRate, 1.0);
-
-        return new SimState(numOfCustomers, numOfServers, 0, maxQueueLength, randomGenerator);
+        return new SimState(numOfCustomers, numOfServers, 0, maxQueueLength, rngBaseSeed, arrivalRate, serviceRate, 1.0);
     }
 
     /**

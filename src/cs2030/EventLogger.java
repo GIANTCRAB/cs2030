@@ -3,12 +3,8 @@ package cs2030;
 public class EventLogger implements Logger {
     private final StringBuilder logInfo;
 
-    EventLogger() {
-        this(new StringBuilder());
-    }
-
-    EventLogger(StringBuilder logInfo) {
-        this.logInfo = logInfo;
+    public EventLogger() {
+        this.logInfo = new StringBuilder();
     }
 
     @Override
@@ -18,6 +14,7 @@ public class EventLogger implements Logger {
 
     @Override
     public Logger log(String message) {
-        return new EventLogger(this.logInfo.append(message));
+        this.logInfo.append(message);
+        return this;
     }
 }

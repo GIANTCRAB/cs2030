@@ -8,7 +8,7 @@ package cs2030;
  * @author Ooi Wei Tsang
  * @version CS2030 AY19/20 Sem 1 Lab 7
  */
-class Statistics {
+public class Statistics {
     /**
      * Sum of time spent waiting for all customers.
      */

@@ -13,7 +13,7 @@ public class RandomGenerator {
     private final double customerServiceRate;
     private final double serverRestingRate;
 
-    public RandomGenerator(int seed, double customerArrivalRate, double customerServiceRate, double serverRestingRate) {
+    RandomGenerator(int seed, double customerArrivalRate, double customerServiceRate, double serverRestingRate) {
         this.rngArrival = new Random((long) seed);
         this.rngService = new Random((long) (seed + 1));
         this.rngRest = new Random((long) (seed + 2));
@@ -25,23 +25,23 @@ public class RandomGenerator {
         this.serverRestingRate = serverRestingRate;
     }
 
-    public double genInterArrivalTime() {
+    double genInterArrivalTime() {
         return -Math.log(this.rngArrival.nextDouble()) / this.customerArrivalRate;
     }
 
-    public double genServiceTime() {
+    double genServiceTime() {
         return -Math.log(this.rngService.nextDouble()) / this.customerServiceRate;
     }
 
-    public double genRandomRest() {
+    double genRandomRest() {
         return this.rngRest.nextDouble();
     }
 
-    public double genRestPeriod() {
+    double genRestPeriod() {
         return -Math.log(this.rngRestPeriod.nextDouble()) / this.serverRestingRate;
     }
 
-    public double genCustomerType() {
+    double genCustomerType() {
         return this.rngCustomerType.nextDouble();
     }
 }

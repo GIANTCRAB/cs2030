@@ -1,6 +1,7 @@
 package cs2030;
 
 import cs2030.simulator.RandomGenerator;
+import cs2030.simulator.ServerCounter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.Optional;
  * @author atharvjoshi
  * @version CS2030 AY19/20 Sem 1 Lab 7
  */
-class Shop {
+public class Shop {
     /**
      * List of servers.
      */
@@ -27,12 +28,12 @@ class Shop {
      *
      * @param numOfServers The number of servers.
      */
-    Shop(int numOfServers,
-         int numOfSelfCheckout,
-         int maxQueueLength,
-         RandomGenerator randomGenerator,
-         Logger logger,
-         Statistics statistics) {
+    public Shop(int numOfServers,
+                int numOfSelfCheckout,
+                int maxQueueLength,
+                RandomGenerator randomGenerator,
+                Logger logger,
+                Statistics statistics) {
         this.checkoutCounters = new ArrayList<>();
         Stream.iterate(1, i -> i + 1)
                 .limit(numOfServers)
@@ -56,7 +57,8 @@ class Shop {
      * optional of the server if a matching server is found.
      */
     public Optional<CheckoutCounter> find(Predicate<CheckoutCounter> predicate) {
-        return this.checkoutCounters.stream()
+        return this.checkoutCounters
+                .stream()
                 .filter(predicate)
                 .findFirst();
     }
