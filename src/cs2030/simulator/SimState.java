@@ -176,6 +176,8 @@ public class SimState {
 
     /**
      * Populate data and run simulation
+     *
+     * @return returns the current simulation state
      */
     public SimState run() {
         // Generate data
