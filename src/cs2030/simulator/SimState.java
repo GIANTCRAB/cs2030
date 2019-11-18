@@ -149,6 +149,7 @@ public class SimState {
 
         return Optional.of(new Event[]{
                 new EventImpl(time, () -> {
+                    customer.setLeave();
                     this.log.log(String.format("%.3f %s leaves\n", time, customer));
                     this.stats.looseOneCustomer();
 

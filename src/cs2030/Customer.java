@@ -18,7 +18,7 @@ public abstract class Customer implements HasCustomerState {
     /**
      * The time this customer arrives.
      */
-    private double timeArrived;
+    private final double timeArrived;
 
     /**
      * The current state of the customer

@@ -1,5 +1,5 @@
 package cs2030;
 
-public interface HasOneCheckoutHandler extends CheckoutCounter {
+public interface HasOneCheckoutHandler {
     CheckoutHandler getCheckoutHandler();
 }

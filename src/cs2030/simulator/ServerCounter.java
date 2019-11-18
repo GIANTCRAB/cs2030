@@ -4,7 +4,7 @@ import cs2030.*;
 
 import java.util.Optional;
 
-public class ServerCounter implements HasOneCheckoutHandler {
+public class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
     private final CheckoutQueue checkoutQueue;
     private final Server server;
     private final RandomGenerator randomGenerator;
@@ -13,10 +13,10 @@ public class ServerCounter implements HasOneCheckoutHandler {
     private Optional<Customer> currentlyServing = Optional.empty();
 
     public ServerCounter(ServerCheckoutQueue serverCheckoutQueue,
-                  Server server,
-                  RandomGenerator randomGenerator,
-                  Logger logger,
-                  Statistics statistics) {
+                         Server server,
+                         RandomGenerator randomGenerator,
+                         Logger logger,
+                         Statistics statistics) {
         this.checkoutQueue = serverCheckoutQueue;
         this.server = server;
         this.randomGenerator = randomGenerator;
@@ -39,6 +39,8 @@ public class ServerCounter implements HasOneCheckoutHandler {
                 return this.startServingCustomer(time);
             }
 
+            // Set to waiting
+            customer.setWait();
             // Log waiting
             this.logger.log(String.format("%.3f %s waits to be served by %s\n", time, customer, this.server));
         }
@@ -51,6 +53,9 @@ public class ServerCounter implements HasOneCheckoutHandler {
         // Check if there's queue
         if (this.checkoutQueue.getCurrentQueueLength() > 0) {
             final Customer customer = this.checkoutQueue.pollCustomer();
+
+            // Set to served
+            customer.setServed();
             this.currentlyServing = Optional.of(customer);
 
             // Log customer who was served
@@ -96,8 +101,12 @@ public class ServerCounter implements HasOneCheckoutHandler {
      */
     @Override
     public Optional<Event[]> finishServingCustomer(double time) {
+        // Set customer to done
+        final Customer customer = this.currentlyServing.get();
+        customer.setDone();
+
         // Do logging and statistics
-        this.logger.log(String.format("%.3f %s done serving by %s\n", time, this.currentlyServing.get(), this.server));
+        this.logger.log(String.format("%.3f %s done serving by %s\n", time, customer, this.server));
 
         // Set as no one being served
         this.currentlyServing = Optional.empty();
