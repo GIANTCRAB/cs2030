@@ -73,10 +73,10 @@ class Server implements CheckoutHandler, HasRestState {
     }
 
     @Override
-    public Optional<Event[]> takeRest(double doneTime) {
+    public Event takeRest(double doneTime) {
         this.restState = RestStates.SERVER_REST;
 
-        return Optional.of(new EventImpl[]{new EventImpl(doneTime, this::stopRest)});
+        return new EventImpl(doneTime, this::stopRest);
     }
 
     @Override

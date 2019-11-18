@@ -38,8 +38,10 @@ class Main {
         final int numOfCustomers = scanner.nextInt();
         final double arrivalRate = scanner.nextDouble();
         final double serviceRate = scanner.nextDouble();
+        final double restingRate = scanner.nextDouble();
+        final double restingProbability = scanner.nextDouble();
 
-        return new SimState(numOfCustomers, numOfServers, 0, maxQueueLength, rngBaseSeed, arrivalRate, serviceRate, 1.0);
+        return new SimState(numOfCustomers, numOfServers, 0, maxQueueLength, rngBaseSeed, arrivalRate, serviceRate, restingRate, restingProbability);
     }
 
     /**

@@ -51,14 +51,15 @@ public class SimState {
     /**
      * Constructor for creating the simulation state from scratch.
      *
-     * @param numOfServers      The number of servers.
-     * @param numOfCustomers    The number of customers.
-     * @param numOfSelfCheckout The number of self checkout machines.
-     * @param maxQueueLength    The maximum queue length of checkout queues
+     * @param numOfServers       The number of servers.
+     * @param numOfCustomers     The number of customers.
+     * @param numOfSelfCheckout  The number of self checkout machines.
+     * @param maxQueueLength     The maximum queue length of checkout queues
      * @param rngBaseSeed
      * @param arrivalRate
      * @param serviceRate
      * @param serverRestingRate
+     * @param restingProbability
      */
     public SimState(int numOfCustomers,
                     int numOfServers,
@@ -67,13 +68,14 @@ public class SimState {
                     int rngBaseSeed,
                     double arrivalRate,
                     double serviceRate,
-                    double serverRestingRate) {
+                    double serverRestingRate,
+                    double restingProbability) {
         this.numOfCustomers = numOfCustomers;
         this.stats = new Statistics();
         this.eventStreamProvider = new EventStreamProvider();
         this.log = new EventLogger();
         this.randomGenerator = new RandomGenerator(rngBaseSeed, arrivalRate, serviceRate, serverRestingRate);
-        this.shop = new Shop(numOfServers, numOfSelfCheckout, maxQueueLength, this.randomGenerator, this.log, this.stats);
+        this.shop = new Shop(numOfServers, numOfSelfCheckout, maxQueueLength, restingProbability, this.randomGenerator, this.log, this.stats);
         this.lastCustomerId = 0;
     }
 

@@ -28,6 +28,7 @@ class Shop {
     public Shop(int numOfServers,
                 int numOfSelfCheckout,
                 int maxQueueLength,
+                double restingProbability,
                 RandomGenerator randomGenerator,
                 Logger logger,
                 Statistics statistics) {
@@ -37,6 +38,7 @@ class Shop {
                 .map(num -> new ServerCounter(
                         new ServerCheckoutQueue(maxQueueLength),
                         new Server(num),
+                        restingProbability,
                         randomGenerator,
                         logger,
                         statistics)

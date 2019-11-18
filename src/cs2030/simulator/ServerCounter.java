@@ -1,22 +1,27 @@
 package cs2030.simulator;
 
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
     private final CheckoutQueue checkoutQueue;
     private final Server server;
+    private final double restingProbability;
     private final RandomGenerator randomGenerator;
     private final Logger logger;
     private final Statistics statistics;
     private Optional<Customer> currentlyServing = Optional.empty();
 
-    public ServerCounter(ServerCheckoutQueue serverCheckoutQueue,
-                         Server server,
-                         RandomGenerator randomGenerator,
-                         Logger logger,
-                         Statistics statistics) {
+    ServerCounter(ServerCheckoutQueue serverCheckoutQueue,
+                  Server server,
+                  double restingProbability,
+                  RandomGenerator randomGenerator,
+                  Logger logger,
+                  Statistics statistics) {
         this.checkoutQueue = serverCheckoutQueue;
         this.server = server;
+        this.restingProbability = restingProbability;
         this.randomGenerator = randomGenerator;
         this.logger = logger;
         this.statistics = statistics;
@@ -109,19 +114,20 @@ class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
         // Set as no one being served
         this.currentlyServing = Optional.empty();
 
+        // Roll for a chance of resting
+        if (this.randomGenerator.genRandomRest() < this.restingProbability) {
+            // Add rest
+            final double randomRestTime = this.randomGenerator.genRestPeriod();
+            final double doneRestTime = time + randomRestTime;
+            final Event restEvent = this.server.takeRest(doneRestTime);
+
+            return Optional.of(new Event[]{
+                    restEvent,
+                    new EventImpl(doneRestTime, () -> this.startServingCustomer(doneRestTime))
+            });
+        }
+
         return this.startServingCustomer(time);
-
-        // Add rest
-        /**
-         final double randomRestTime = this.randomGenerator.genRestPeriod();
-         final double doneRestTime = time + randomRestTime;
-         final Optional<Event[]> restEvents = this.server.takeRest(doneRestTime);
-
-         return Optional.of(
-         Stream.concat(
-         Arrays.stream(restEvents.get()),
-         Arrays.stream(this.startServingCustomer(doneRestTime).get())
-         ).toArray(Event[]::new));**/
     }
 
     private boolean isResting() {
