@@ -1,5 +1,5 @@
 package cs2030.simulator;
 
-public interface CheckoutHandler {
+interface CheckoutHandler {
     int getId();
 }

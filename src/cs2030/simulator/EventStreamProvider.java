@@ -6,13 +6,13 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.stream.Stream;
 
-public class EventStreamProvider {
+class EventStreamProvider {
     /**
      * The priority queue of events.
      */
     private final Queue<Event> events = new PriorityQueue<>();
 
-    public EventStreamProvider() {
+    EventStreamProvider() {
     }
 
     public void addEvent(Event event) {

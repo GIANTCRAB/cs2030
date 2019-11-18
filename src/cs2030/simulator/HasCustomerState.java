@@ -1,6 +1,6 @@
 package cs2030.simulator;
 
-public interface HasCustomerState {
+interface HasCustomerState {
     CustomerStates getCustomerState();
 
     void setServed();

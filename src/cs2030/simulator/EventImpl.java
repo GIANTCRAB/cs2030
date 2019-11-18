@@ -3,7 +3,7 @@ package cs2030.simulator;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class EventImpl implements Event {
+class EventImpl implements Event {
     /**
      * The time this event occurs at.
      */

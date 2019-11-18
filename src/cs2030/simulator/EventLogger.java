@@ -1,9 +1,9 @@
 package cs2030.simulator;
 
-public class EventLogger implements Logger {
+class EventLogger implements Logger {
     private final StringBuilder logInfo;
 
-    public EventLogger() {
+    EventLogger() {
         this.logInfo = new StringBuilder();
     }
 

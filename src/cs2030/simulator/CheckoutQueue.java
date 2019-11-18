@@ -3,7 +3,7 @@ package cs2030.simulator;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-public abstract class CheckoutQueue {
+abstract class CheckoutQueue {
     private final Queue<Customer> customerQueue;
     private final int maxQueueCapacity;
 

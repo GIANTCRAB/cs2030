@@ -9,7 +9,7 @@ package cs2030.simulator;
  * @author atharvjoshi
  * @version CS2030 AY19/20 Sem 1 Lab 7
  */
-public abstract class Customer implements HasCustomerState {
+abstract class Customer implements HasCustomerState {
     /**
      * The unique ID of this customer.
      */

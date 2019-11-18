@@ -1,5 +1,5 @@
 package cs2030.simulator;
 
-public enum CustomerStates {
+enum CustomerStates {
     ARRIVES, SERVED, WAITS, LEAVES, DONE;
 }
