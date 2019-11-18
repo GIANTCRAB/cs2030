@@ -3,8 +3,8 @@ package cs2030.simulator;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-abstract class CheckoutQueue {
-    private final Queue<Customer> customerQueue;
+abstract class CheckoutQueue<T> {
+    protected final Queue<T> customerQueue;
     private final int maxQueueCapacity;
 
     CheckoutQueue(int maxQueueCapacity) {
@@ -24,7 +24,7 @@ abstract class CheckoutQueue {
         return this.customerQueue.size() < this.getMaxQueueCapacity();
     }
 
-    public CheckoutQueue joinCustomerQueue(Customer customer) {
+    public CheckoutQueue joinCustomerQueue(T customer) {
         if (this.canJoinCustomerQueue()) {
             this.customerQueue.add(customer);
         }
@@ -32,7 +32,7 @@ abstract class CheckoutQueue {
         return this;
     }
 
-    public Customer pollCustomer() {
+    public T pollCustomer() {
         return this.customerQueue.poll();
     }
 }

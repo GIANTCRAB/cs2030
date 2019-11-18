@@ -34,7 +34,7 @@ class Shop {
         Stream.iterate(1, i -> i + 1)
                 .limit(numOfServers)
                 .map(num -> new ServerCounter(
-                        new ServerCheckoutQueue(maxQueueLength),
+                        maxQueueLength,
                         new Server(num),
                         restingProbability,
                         randomGenerator,
@@ -45,7 +45,6 @@ class Shop {
 
         // Initialize self checkout
         if (numOfSelfCheckout > 0) {
-            final Map<CheckoutHandler, SelfCheckoutQueue> selfCheckoutQueues = new LinkedHashMap<>();
             final Map<CheckoutHandler, Optional<Customer>> selfCheckoutMachines = new LinkedHashMap<>();
             final int selfCheckoutStart = numOfServers + 1;
             Stream.iterate(selfCheckoutStart, x -> x + 1)
@@ -53,10 +52,9 @@ class Shop {
                     .map(SelfCheckoutMachine::new)
                     .forEach(selfCheckoutMachine -> {
                         // Add to self checkout counter
-                        selfCheckoutQueues.put(selfCheckoutMachine, new SelfCheckoutQueue(maxQueueLength));
                         selfCheckoutMachines.put(selfCheckoutMachine, Optional.empty());
                     });
-            this.checkoutCounters.add(new SelfCheckoutCounter(selfCheckoutQueues, selfCheckoutMachines, randomGenerator, logger, statistics));
+            this.checkoutCounters.add(new SelfCheckoutCounter(maxQueueLength, selfCheckoutMachines, randomGenerator, logger, statistics));
         }
 
     }

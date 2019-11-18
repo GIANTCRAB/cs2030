@@ -2,21 +2,20 @@ package cs2030.simulator;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
-    private final Map<CheckoutHandler, SelfCheckoutQueue> selfCheckoutQueues;
+    private final SelfCheckoutQueue<Customer> selfCheckoutQueue;
     private final Map<CheckoutHandler, Optional<Customer>> selfCheckoutMachines;
     private final RandomGenerator randomGenerator;
     private final Logger logger;
     private final Statistics statistics;
 
-    SelfCheckoutCounter(Map<CheckoutHandler, SelfCheckoutQueue> selfCheckoutQueues,
+    SelfCheckoutCounter(int maxQueueLength,
                         Map<CheckoutHandler, Optional<Customer>> selfCheckoutMachines,
                         RandomGenerator randomGenerator,
                         Logger logger,
                         Statistics statistics) {
-        this.selfCheckoutQueues = selfCheckoutQueues;
+        this.selfCheckoutQueue = new SelfCheckoutQueue<>(maxQueueLength);
         this.selfCheckoutMachines = selfCheckoutMachines;
         this.randomGenerator = randomGenerator;
         this.logger = logger;
@@ -30,69 +29,70 @@ class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
 
     @Override
     public Optional<Event[]> addCustomerToCounter(double time, Customer customer) {
-        Optional<Entry<CheckoutHandler, SelfCheckoutQueue>> selfCheckoutQueueEntry = this.selfCheckoutQueues.entrySet().stream().filter(entry -> entry.getValue().canJoinCustomerQueue()).findFirst();
-        if (selfCheckoutQueueEntry.isPresent()) {
-            final Entry<CheckoutHandler, SelfCheckoutQueue> selfCheckoutQueueEntryData = selfCheckoutQueueEntry.get();
-            selfCheckoutQueueEntryData.getValue().joinCustomerQueue(customer);
+        if (customer.toString().equals("14")) {
+            System.out.println("add 14 to customer counter");
+        }
+        if (this.canAcceptCustomer()) {
+            final var availCheckoutHandler = this.getQueueableCheckoutHandler();
+            this.selfCheckoutQueue.joinCustomerQueue(customer);
             // Check if can serve immediately
-            if (this.isAvailable()) {
-                // checkout machine is idling
+            if (this.isAvailable(availCheckoutHandler)) {
+                // checkout machine can serve right now
                 return this.startServingCustomer(time);
             }
-
 
             // Set to waiting
             customer.setWait();
             // Log waiting
-            this.logger.log(String.format("%.3f %s waits to be served by %s\n", time, customer, selfCheckoutQueueEntryData.getKey()));
+            this.logger.log(String.format("%.3f %s waits to be served by %s\n", time, customer, getFirstCheckoutHandler()));
         }
 
         return Optional.empty();
     }
 
+    private Optional<CheckoutHandler> getAvailableCheckoutHandler() {
+        return this.selfCheckoutMachines.entrySet().stream().filter(entry -> entry.getValue().isEmpty()).findFirst().map(Entry::getKey);
+    }
+
+    private CheckoutHandler getQueueableCheckoutHandler() {
+        return this.getAvailableCheckoutHandler()
+                .orElseGet(this::getFirstCheckoutHandler);
+    }
+
+    private CheckoutHandler getFirstCheckoutHandler() {
+        return this.selfCheckoutMachines.keySet().stream().findFirst().get();
+    }
+
     @Override
     public Optional<Event[]> startServingCustomer(double time) {
         // Check if there's queue
-        // Needs to be sorted descending order, so no parallel stream
+        if (this.selfCheckoutQueue.getCurrentQueueLength() > 0) {
+            final Customer customer = this.selfCheckoutQueue.pollCustomer();
+            final CheckoutHandler checkoutHandler = this.getAvailableCheckoutHandler().get();
 
-        // Check that they're not serving someone AND that they have a queue
+            // Set to served
+            customer.setServed();
+            this.selfCheckoutMachines.put(checkoutHandler, Optional.of(customer));
 
-        // Gather checkout machines that are not serving someone
-        final Set<CheckoutHandler> availCheckoutMachines = this.selfCheckoutMachines.entrySet().stream()
-                .filter(entry -> entry.getValue().isEmpty())
-                .map(Entry::getKey)
-                .collect(Collectors.toSet());
-        if (availCheckoutMachines.size() > 0) {
-            // Retrieve the first checkout machine that has a queue
-            Optional<Entry<CheckoutHandler, SelfCheckoutQueue>> selfCheckoutQueueEntry = this.selfCheckoutQueues.entrySet().stream()
-                    .filter(entry -> availCheckoutMachines.contains(entry.getKey()) && entry.getValue().getCurrentQueueLength() > 0)
-                    .findFirst();
-            if (selfCheckoutQueueEntry.isPresent()) {
-                final CheckoutHandler checkoutHandler = selfCheckoutQueueEntry.get().getKey();
-                final SelfCheckoutQueue selfCheckoutQueue = selfCheckoutQueueEntry.get().getValue();
-                final Customer customer = selfCheckoutQueue.pollCustomer();
+            // Log customer who was served
+            this.logger.log(String.format("%.3f %s served by %s\n", time, customer, checkoutHandler));
+            this.statistics.serveOneCustomer()
+                    .recordWaitingTime(customer.timeWaited(time));
 
-                // Set to served
-                customer.setServed();
-                this.selfCheckoutMachines.put(checkoutHandler, Optional.of(customer));
+            double doneTime = time + this.randomGenerator.genServiceTime();
 
-                // Log customer who was served
-                this.logger.log(String.format("%.3f %s served by %s\n", time, customer, checkoutHandler));
-                this.statistics.serveOneCustomer()
-                        .recordWaitingTime(customer.timeWaited(time));
-
-                double doneTime = time + this.randomGenerator.genServiceTime();
-
-                return Optional.of(
-                        new Event[]{
-                                new EventImpl(doneTime, () -> this.finishServingCustomer(doneTime, checkoutHandler))
-                        }
-                );
-            }
+            return Optional.of(
+                    new Event[]{
+                            new EventImpl(doneTime, () -> this.finishServingCustomer(doneTime, checkoutHandler))
+                    }
+            );
         }
 
-
         return Optional.empty();
+    }
+
+    private boolean isAvailable(CheckoutHandler checkoutHandler) {
+        return this.selfCheckoutQueue.getCurrentQueueLength() <= 1 && this.selfCheckoutMachines.entrySet().parallelStream().anyMatch(entry -> entry.getKey().equals(checkoutHandler) && entry.getValue().isEmpty());
     }
 
     @Override
@@ -102,7 +102,7 @@ class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
 
     @Override
     public boolean isIdle() {
-        return this.isAvailable() && this.selfCheckoutQueues.values().parallelStream().anyMatch(selfCheckoutQueue -> selfCheckoutQueue.getCurrentQueueLength() == 0);
+        return this.isAvailable() && this.selfCheckoutQueue.getCurrentQueueLength() == 0;
     }
 
     @Override
@@ -113,7 +113,7 @@ class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
 
     @Override
     public boolean canAcceptCustomer() {
-        return this.selfCheckoutQueues.values().parallelStream().anyMatch(CheckoutQueue::canJoinCustomerQueue);
+        return this.selfCheckoutQueue.canJoinCustomerQueue();
     }
 
     /**
@@ -122,17 +122,26 @@ class SelfCheckoutCounter implements CheckoutCounter, HasManyCheckoutHandlers {
      */
     @Override
     public Optional<Event[]> finishServingCustomer(double time, CheckoutHandler selfCheckoutMachine) {
-        // Retrieve customer
-        final Customer customer = this.selfCheckoutMachines.get(selfCheckoutMachine).get();
-        // Set customer to done
-        customer.setDone();
+        final var selfCheckOutMachineAndCustomer = this.selfCheckoutMachines.get(selfCheckoutMachine);
+        if (selfCheckOutMachineAndCustomer.isPresent()) {
+            // Retrieve customer
+            final Customer customer = selfCheckOutMachineAndCustomer.get();
+            // Set customer to done
+            customer.setDone();
 
-        // Do logging and statistics
-        this.logger.log(String.format("%.3f %s done serving by %s\n", time, customer, selfCheckoutMachine));
+            if (customer.toString().equals("13")) {
+                System.out.println("13 finish");
+            }
 
-        // Set as no one being served
-        this.selfCheckoutMachines.put(selfCheckoutMachine, Optional.empty());
+            // Do logging and statistics
+            this.logger.log(String.format("%.3f %s done serving by %s\n", time, customer, selfCheckoutMachine));
 
-        return this.startServingCustomer(time);
+            // Set as no one being served
+            this.selfCheckoutMachines.put(selfCheckoutMachine, Optional.empty());
+
+            return this.startServingCustomer(time);
+        }
+
+        return Optional.empty();
     }
 }

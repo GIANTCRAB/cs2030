@@ -3,7 +3,7 @@ package cs2030.simulator;
 import java.util.Optional;
 
 class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
-    private final CheckoutQueue checkoutQueue;
+    private final CheckoutQueue<Customer> checkoutQueue;
     private final Server server;
     private final double restingProbability;
     private final RandomGenerator randomGenerator;
@@ -11,13 +11,13 @@ class ServerCounter implements CheckoutCounter, HasOneCheckoutHandler {
     private final Statistics statistics;
     private Optional<Customer> currentlyServing = Optional.empty();
 
-    ServerCounter(ServerCheckoutQueue serverCheckoutQueue,
+    ServerCounter(int maxQueueLength,
                   Server server,
                   double restingProbability,
                   RandomGenerator randomGenerator,
                   Logger logger,
                   Statistics statistics) {
-        this.checkoutQueue = serverCheckoutQueue;
+        this.checkoutQueue = new ServerCheckoutQueue<>(maxQueueLength);
         this.server = server;
         this.restingProbability = restingProbability;
         this.randomGenerator = randomGenerator;
