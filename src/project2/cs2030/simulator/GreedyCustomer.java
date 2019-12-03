@@ -1,4 +1,4 @@
-package cs2030.simulator;
+package project2.cs2030.simulator;
 
 /**
  * A greedy form of customer that will go to the shortest queue

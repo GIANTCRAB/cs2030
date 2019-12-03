@@ -1,4 +1,4 @@
-package cs2030.simulator;
+package project2.cs2030.simulator;
 
 import java.util.*;
 import java.util.function.Predicate;

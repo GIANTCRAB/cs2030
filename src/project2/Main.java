@@ -1,4 +1,6 @@
-import cs2030.simulator.SimState;
+package project2;
+
+import project2.cs2030.simulator.SimState;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

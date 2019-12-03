@@ -1,9 +1,9 @@
-package cs2030.simulator;
+package project2.cs2030.simulator;
 
 import java.util.Optional;
 
 /**
- * The cs2030.simulator.Server class keeps track of who is the customer being served (if any)
+ * The project2.cs2030.simulator.Server class keeps track of who is the customer being served (if any)
  * and who is the customer waiting to be served (if any).
  *
  * @author woohuiren

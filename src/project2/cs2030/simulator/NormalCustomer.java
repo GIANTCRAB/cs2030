@@ -1,4 +1,4 @@
-package cs2030.simulator;
+package project2.cs2030.simulator;
 
 /**
  * Just a normal customer that will go to the first available queue

@@ -1,7 +1,7 @@
-package cs2030.simulator;
+package project2.cs2030.simulator;
 
 /**
- * The cs2030.simulator.SelfCheckoutMachine class keeps track of the machine's state
+ * The project2.cs2030.simulator.SelfCheckoutMachine class keeps track of the machine's state
  *
  * @author woohuiren
  */

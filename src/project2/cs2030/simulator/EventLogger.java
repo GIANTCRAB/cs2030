@@ -1,4 +1,4 @@
-package cs2030.simulator;
+package project2.cs2030.simulator;
 
 class EventLogger implements Logger {
     private final StringBuilder logInfo;

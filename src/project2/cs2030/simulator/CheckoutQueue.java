@@ -1,4 +1,4 @@
-package cs2030.simulator;
+package project2.cs2030.simulator;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
